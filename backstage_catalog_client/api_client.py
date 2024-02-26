@@ -2,6 +2,8 @@ import itertools
 from typing import Protocol
 
 from httpx import AsyncClient
+
+from backstage_catalog_client.entities import Entity
 from backstage_catalog_client.models import (
     AddLocationRequest,
     AddLocationResponse,

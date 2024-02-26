@@ -1,5 +1,6 @@
-from json_types import JsonObject
 from pydantic import BaseModel
+
+from backstage_catalog_client.json_types import JsonObject
 
 
 class EntityLink(BaseModel):
