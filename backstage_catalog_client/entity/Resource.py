@@ -9,7 +9,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
-from .Entity import Component as Model_1
+from .Entity import Entity as Model_1
 
 
 class ApiVersion(Enum):
@@ -54,5 +54,5 @@ class Resource(Model_1):
         extra="allow",
     )
     apiVersion: Optional[ApiVersion] = None
-    kind: Optional[Kind] = None
+    kind = "Resource"
     spec: Spec

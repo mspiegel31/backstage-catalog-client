@@ -9,7 +9,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from .Entity import Component as Model_1
+from .Entity import Entity as Model_1
 
 
 class ApiVersion(Enum):
