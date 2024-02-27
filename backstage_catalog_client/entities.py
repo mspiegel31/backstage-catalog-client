@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from pydantic import BaseModel
 
 from backstage_catalog_client.json_types import JsonObject
@@ -24,14 +26,14 @@ class EntityMeta(BaseModel):
     title: str | None = None
     description: str | None = None
     labels: dict[str, str] | None = {}
-    annotations: dict[str, str] | None = {}
-    tags: list[str] | None = []
-    links: list[EntityLink] | None = []
+    annotations: dict[str, str] = {}
+    tags: list[str] = []
+    links: list[EntityLink] = []
 
 
 class Entity(BaseModel):
     apiVersion: str
     kind: str
     metadata: EntityMeta
-    spec: JsonObject | None = {}
-    relations: list[EntityRelation] | None = []
+    spec: JsonObject = {}
+    relations: Sequence[EntityRelation] = []
