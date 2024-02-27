@@ -24,7 +24,7 @@ def entities_response(entities) -> httpx.Response:
     return httpx.Response(200, json=entities)
 
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def mocked_entities(entities_response: httpx.Response):
     with respx.mock(base_url=mock_base_url) as respx_mock:
         respx_mock.get(f"{mock_base_url}/entities").mock(return_value=entities_response)
