@@ -1,4 +1,3 @@
-import itertools
 from typing import Protocol
 
 from httpx import AsyncClient
@@ -121,7 +120,8 @@ class DefaultCatalogApi(CatalogApi):
         for filter_item in filter:
             filter_parts: list[str] = []
             for key, value in filter_item.items():
-                for v in itertools.chain(*[value]):
+                v_iter = value if isinstance(value, list) else [value]
+                for v in v_iter:
                     if v == CATALOG_FILTER_EXISTS:
                         filter_parts.append(key)
                     elif isinstance(v, str):

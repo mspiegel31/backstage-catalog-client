@@ -2,7 +2,7 @@ from typing import Dict, List, Mapping, Sequence
 
 from pydantic import BaseModel
 
-from backstage_catalog_client.entities import Entity
+from backstage_catalog_client.entity.Entity import Entity
 
 # check out key ordering issues in pydantic here:
 # https://github.com/tiangolo/fastapi/discussions/7943
