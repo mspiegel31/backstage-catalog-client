@@ -9,7 +9,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, constr
 
-from .Entity import Model as Model_1
+from .Entity import Entity
 
 
 class ApiVersion(Enum):
@@ -42,7 +42,7 @@ class Spec(BaseModel):
     )
 
 
-class Model(Model_1.Model):
+class Model(Entity.Model):
     model_config = ConfigDict(
         extra="allow",
     )

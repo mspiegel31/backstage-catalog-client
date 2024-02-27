@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, constr
 from . import EntityMeta, common
 
 
-class Model(BaseModel):
+class Entity(BaseModel):
     model_config = ConfigDict(
         extra="allow",
     )
