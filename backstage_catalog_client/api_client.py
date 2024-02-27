@@ -97,7 +97,7 @@ class DefaultCatalogApi(CatalogApi):
 
     async def getEntities(
         self,
-        request: GetEntitiesRequest | None,
+        request: GetEntitiesRequest,
         options: CatalogRequestOptions | None,
     ):
         dict_request = request.model_dump(exclude_unset=True)

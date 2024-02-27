@@ -1,12 +1,13 @@
-from typing import Dict, List
+from typing import Dict, List, Mapping, Sequence
 
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel
+
 from backstage_catalog_client.entities import Entity
 
 # check out key ordering issues in pydantic here:
 # https://github.com/tiangolo/fastapi/discussions/7943
 
-EntityFilterQuery = RootModel[dict[str, str | list[str]] | list[dict[str, str | list[str]]]]
+EntityFilterQuery = Mapping[str, str | Sequence[str]] | Sequence[Mapping[str, str | Sequence[str]]]
 
 
 class EntityOrderQuery(BaseModel):
@@ -31,7 +32,7 @@ class GetEntitiesRequest(BaseModel):
 
 class GetEntitiesResponse(BaseModel):
     # Implementation details of GetEntitiesResponse
-    items: list[Entity | None]
+    items: list[Entity]
 
 
 class GetEntitiesByRefsRequest(BaseModel):
