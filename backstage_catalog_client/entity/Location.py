@@ -48,7 +48,7 @@ class Spec(BaseModel):
     )
 
 
-class Model(Entity.Model):
+class Model(Entity):
     model_config = ConfigDict(
         extra="allow",
     )

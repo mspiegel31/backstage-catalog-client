@@ -7,7 +7,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, ConfigDict, Field, constr
 
 from .Entity import Entity
 
@@ -17,8 +17,7 @@ class ApiVersion(Enum):
     backstage_io_v1beta1 = "backstage.io/v1beta1"
 
 
-class Kind(Enum):
-    Domain = "Domain"
+Domain = "Domain"
 
 
 class Spec(BaseModel):
@@ -29,10 +28,10 @@ class Spec(BaseModel):
     )
 
 
-class Model(Entity.Model):
+class Model(Entity):
     model_config = ConfigDict(
         extra="allow",
     )
     apiVersion: Optional[ApiVersion] = None
-    kind: Optional[Kind] = None
+    kind = Domain
     spec: Spec
