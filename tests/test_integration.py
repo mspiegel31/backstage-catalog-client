@@ -34,4 +34,5 @@ async def test_singular_query(catalog_api: CatalogApi):
     ]
     request = GetEntitiesRequest(filter=filter)
     response = await catalog_api.getEntities(request, options=None)
+
     assert response.items
