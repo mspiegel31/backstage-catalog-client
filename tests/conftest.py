@@ -14,14 +14,19 @@ mock_base_url = "https://foo.bar/api/catalog"
 
 
 @pytest.fixture(scope="session")
-def entities():
+def all_entities():
     with open(DATA_DIR / "entities.json") as f:
         return json.load(f)
 
 
 @pytest.fixture(scope="session")
-def entities_response(entities) -> httpx.Response:
-    return httpx.Response(200, json=entities)
+def components(all_entities) -> list[dict]:
+    return [entity for entity in all_entities if entity["kind"].lower() == "component"]
+
+
+@pytest.fixture(scope="session")
+def entities_response(all_entities) -> httpx.Response:
+    return httpx.Response(200, json=all_entities)
 
 
 @pytest.fixture(autouse=True)
