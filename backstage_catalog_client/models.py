@@ -6,8 +6,8 @@ from backstage_catalog_client.entities import Entity
 
 # check out key ordering issues in pydantic here:
 # https://github.com/tiangolo/fastapi/discussions/7943
-
-EntityFilterQuery = Mapping[str, str | Sequence[str]] | Sequence[Mapping[str, str | Sequence[str]]]
+EntityFilterItem = Mapping[str, str | Sequence[str]]
+EntityFilterQuery = Sequence[EntityFilterItem]
 
 
 class EntityOrderQuery(BaseModel):

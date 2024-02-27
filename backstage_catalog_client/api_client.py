@@ -3,7 +3,7 @@ from typing import Protocol
 
 from httpx import AsyncClient
 
-from backstage_catalog_client.entities import Entity
+from backstage_catalog_client.entity.Entity import Entity
 from backstage_catalog_client.models import (
     AddLocationRequest,
     AddLocationResponse,
@@ -112,15 +112,13 @@ class DefaultCatalogApi(CatalogApi):
         return GetEntitiesResponse(items=items)
 
     def get_filter_value(self, filter: EntityFilterQuery = []):
-        filters = []
+        prepared_filters = []
         # filter param can occur multiple times, for example
         # /api/catalog/entities?filter=metadata.name=wayback-search,kind=component&filter=metadata.name=www-artist,kind=component'
         # the "outer array" defined by `filter` occurrences corresponds to "anyOf" filters
         # the "inner array" defined within a `filter` param corresponds to "allOf" filters
-        native_filter = filter.model_dump()
-        iterator = native_filter if isinstance(native_filter, list) else [native_filter]
 
-        for filter_item in itertools.chain(iterator):
+        for filter_item in filter:
             filter_parts: list[str] = []
             for key, value in filter_item.items():
                 for v in itertools.chain(*[value]):
@@ -129,6 +127,5 @@ class DefaultCatalogApi(CatalogApi):
                     elif isinstance(v, str):
                         filter_parts.append(f"{key}={v}")
             if filter_parts:
-                filters.append(",".join(filter_parts))
-
-        return filters
+                prepared_filters.append(",".join(filter_parts))
+        return prepared_filters
