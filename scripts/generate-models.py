@@ -1,20 +1,35 @@
 import asyncio
-import base64
+import os
+from base64 import b64decode
 from pathlib import Path
 from urllib.parse import urljoin
 
 import httpx
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+token = os.getenv("GITHUB_TOKEN")
 
 ROOT = Path(__file__).parent.parent
 
 api_request_path = "/repos/backstage/backstage/contents/"
 schema_path = "packages/catalog-model/src"
-
-
 schema_request = urljoin(api_request_path, schema_path)
 
+client = httpx.AsyncClient(base_url="https://api.github.com/")
+if token:
+    client.headers.update({"Authorization": f"Bearer {token}"})
+client.headers.update({"User-Agent": "backstage_catalog_client"})
 
-async def get_schema_tree(client: httpx.AsyncClient, schema_request: str):
+
+async def get_schema_tree(schema_request: str):
+    client.headers.update(
+        {
+            "Accept": "application/vnd.github.raw+json",
+        }
+    )
     resp = await client.get(schema_request)
     schemas = list(filter(lambda x: x["name"] == "schema", resp.json())).pop()
     tree_request = httpx.URL(schemas["git_url"]).copy_add_param("recursive", "true")
@@ -22,40 +37,32 @@ async def get_schema_tree(client: httpx.AsyncClient, schema_request: str):
     return tree_resp.json()
 
 
-async def write_schemas(client: httpx.AsyncClient, tree_resp: list[dict]):
+async def write_schemas(tree_resp: list[dict]):
     base_path = ROOT / Path("schemas")
-    if not base_path.exists():
-        base_path.mkdir()
+    base_path.mkdir(exist_ok=True)
 
-    for leaf in tree_resp["tree"]:
-        if leaf["type"] == "tree":
-            file_path = base_path / Path(leaf["path"])
-            if not file_path.exists():
-                file_path.mkdir()
-        if leaf["type"] == "blob":
-            file_path = base_path / Path(leaf["path"])
+    for entry in tree_resp["tree"]:
+        print(f"Processing {entry['path']}")
+        if entry["type"] == "tree":
+            directory = base_path / Path(entry["path"])
+            directory.mkdir(exist_ok=True)
+
+        if entry["type"] == "blob":
+            file = base_path / Path(entry["path"])
             client.headers.update(
                 {
                     "Accept": "application/vnd.github.object+json",
-                    "User-Agent": "backstage_catalog_client",
                 }
             )
-            content_resp = await client.get(leaf["url"])
-            content = content_resp.json()
-            writable_content = base64.b64decode(content["content"]).decode("utf-8")
-            file_path.write_text(writable_content)
+            content_resp = await client.get(entry["url"])
+            content = content_resp.json()["content"]
+            file.write_text(b64decode(content).decode("utf-8"))
 
 
 async def main():
-    async with httpx.AsyncClient(base_url="https://api.github.com/") as client:
-        client.headers.update(
-            {
-                "Accept": "application/vnd.github.raw+json",
-                "User-Agent": "backstage_catalog_client",
-            }
-        )
-        tree = await get_schema_tree(client, schema_request)
-        await write_schemas(client, tree)
+    tree = await get_schema_tree(schema_request)
+    await write_schemas(tree)
+    await client.aclose()
 
 
 if __name__ == "__main__":
