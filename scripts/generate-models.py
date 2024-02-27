@@ -38,17 +38,19 @@ async def get_schema_tree(schema_request: str):
 
 
 async def write_schemas(tree_resp: list[dict]):
-    base_path = ROOT / Path("schemas")
-    base_path.mkdir(exist_ok=True)
+    schemas = ROOT / Path("schemas")
+    schemas.mkdir(exist_ok=True)
 
     for entry in tree_resp["tree"]:
-        print(f"Processing {entry['path']}")
-        if entry["type"] == "tree":
-            directory = base_path / Path(entry["path"])
-            directory.mkdir(exist_ok=True)
+        original_path = Path(entry["path"])
+        # if entry["type"] == "tree":
+        #     directory = base_path / Path(entry["path"])
+        #     directory.mkdir(exist_ok=True)
 
         if entry["type"] == "blob":
-            file = base_path / Path(entry["path"])
+            print(f"Processing {entry['path']}")
+
+            file = schemas / Path(original_path.name.split(".")[0])
             client.headers.update(
                 {
                     "Accept": "application/vnd.github.object+json",
