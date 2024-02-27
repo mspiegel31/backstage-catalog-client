@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -62,5 +62,5 @@ class User(Model_1):
         extra="allow",
     )
     apiVersion: Optional[ApiVersion] = None
-    kind = "User"
+    kind: Literal["User"] = "User"
     spec: Spec

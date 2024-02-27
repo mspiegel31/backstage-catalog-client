@@ -14,16 +14,17 @@ class Tag(RootModel[str]):
 
 
 class Link(BaseModel):
-    url: str = Field(
-        ...,
-        description="A url in a standard uri format.",
-        examples=["https://admin.example-org.com"],
-        min_length=1,
-    )
     title: Optional[str] = Field(
         None,
         description="A user friendly display name for the link.",
         examples=["Admin Dashboard"],
+        min_length=1,
+    )
+
+    url: str = Field(
+        ...,
+        description="A url in a standard uri format.",
+        examples=["https://admin.example-org.com"],
         min_length=1,
     )
     icon: Optional[str] = Field(

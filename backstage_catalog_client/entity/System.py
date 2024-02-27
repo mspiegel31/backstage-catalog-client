@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -41,5 +41,5 @@ class System(Model_1):
         extra="allow",
     )
     apiVersion: Optional[ApiVersion] = None
-    kind = "System"
+    kind: Literal["System"] = "System"
     spec: Spec
