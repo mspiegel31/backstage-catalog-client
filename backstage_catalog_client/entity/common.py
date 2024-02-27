@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Model(BaseModel):
@@ -26,7 +26,7 @@ class Reference(BaseModel):
     name: str = Field(..., description="The metadata.name field of the entity.", min_length=1)
 
 
-class Relation1(BaseModel):
+class Relation(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
@@ -56,14 +56,6 @@ class Error(BaseModel):
     stack: Optional[str] = Field(None, description="An error stack trace")
 
 
-class Relation(RootModel[Any]):
-    root: Any
-
-
-class Status(RootModel[Any]):
-    root: Any
-
-
 class StatusItem(BaseModel):
     model_config = ConfigDict(
         extra="allow",
@@ -77,7 +69,7 @@ class StatusItem(BaseModel):
     error: Optional[Error] = Field(None, description="An optional serialized error object related to the status.")
 
 
-class Status1(BaseModel):
+class Status(BaseModel):
     model_config = ConfigDict(
         extra="allow",
     )

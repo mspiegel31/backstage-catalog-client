@@ -17,10 +17,6 @@ class ApiVersion(Enum):
     backstage_io_v1beta1 = "backstage.io/v1beta1"
 
 
-class Kind(Enum):
-    Domain = "Domain"
-
-
 class Spec(BaseModel):
     owner: str = Field(
         ...,
@@ -30,10 +26,10 @@ class Spec(BaseModel):
     )
 
 
-class Model(Model_1.Model):
+class Model(Model_1):
     model_config = ConfigDict(
         extra="allow",
     )
     apiVersion: Optional[ApiVersion] = None
-    kind: Optional[Kind] = None
+    kind = "Domain"
     spec: Spec

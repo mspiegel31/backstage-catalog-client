@@ -77,7 +77,7 @@ class Spec(BaseModel):
     )
 
 
-class Model(Model_1.Model):
+class Model(Model_1):
     model_config = ConfigDict(
         extra="allow",
     )
