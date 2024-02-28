@@ -27,8 +27,8 @@ from backstage_catalog_client.models import (
 class CatalogApi(Protocol):
     async def getEntities(
         self,
-        request: GetEntitiesRequest | None,
-        options: CatalogRequestOptions | None,
+        request: GetEntitiesRequest | None = None,
+        options: CatalogRequestOptions | None = None,
     ) -> GetEntitiesResponse: ...
 
     async def getEntitiesByRefs(
@@ -96,9 +96,14 @@ class DefaultCatalogApi(CatalogApi):
 
     async def getEntities(
         self,
-        request: GetEntitiesRequest,
-        options: CatalogRequestOptions | None,
+        request: GetEntitiesRequest | None,
+        options: CatalogRequestOptions | None = None,
     ):
+        if request is None:
+            request = GetEntitiesRequest()
+        if options is None:
+            options = CatalogRequestOptions()
+
         dict_request = request.model_dump(exclude_unset=True)
         if request.filter:
             dict_request["filter"] = self.get_filter_value(request.filter)

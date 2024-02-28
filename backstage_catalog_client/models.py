@@ -71,7 +71,7 @@ class GetEntityFacetsResponse(BaseModel):
 
 
 class CatalogRequestOptions(BaseModel):
-    token: str | None
+    token: str | None = None
 
 
 class Location(BaseModel):
