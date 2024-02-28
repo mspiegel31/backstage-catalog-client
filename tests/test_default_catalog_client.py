@@ -42,13 +42,34 @@ class TestGetEntities:
     async def test_it_should_build_multiple_entity_search_params_properly(
         catalog_api: CatalogApi, mocked_entities: respx.Router
     ):
-        filter = [
+        query_filter = [
             {"a": "1"},
             {"b": ["2", "3"]},
             {"c": "="},
             {"d": CATALOG_FILTER_EXISTS},
         ]
-        request = GetEntitiesRequest(filter=filter)
+        request = GetEntitiesRequest(filter=query_filter)
         await catalog_api.getEntities(request)
         actual = mocked_entities.calls.last.request.url.params.get_list("filter")
         assert actual == ["a=1", "b=2,b=3", "c==", "d"]
+
+    @staticmethod
+    async def test_it_builds_search_filters_properly_even_with_URL_unsafe_values(
+        catalog_api: CatalogApi, mocked_entities: respx.Router
+    ):
+        query_filter = [
+            {
+                "!@#$%": "t?i=1&a:2",
+                "^&*(){}[]": ["t%^url*encoded2", "url"],
+            }
+        ]
+        await catalog_api.getEntities(GetEntitiesRequest(filter=query_filter))
+        actual = mocked_entities.calls.last.request.url.params.get_list("filter")
+        assert actual == ["!@#$%=t?i=1&a:2,^&*(){}[]=t%^url*encoded2,^&*(){}[]=url"]
+
+    @staticmethod
+    async def test_it_builds_entity_field_selector_properly(catalog_api: CatalogApi, mocked_entities: respx.Router):
+        request = GetEntitiesRequest(fields=["metadata.name", "spec.type"])
+        await catalog_api.getEntities(request)
+        actual = mocked_entities.calls.last.request.url.params.get_list("fields")
+        assert actual == ["metadata.name", "spec.type"]

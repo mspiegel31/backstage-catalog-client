@@ -1,4 +1,4 @@
-from typing import Dict, List, Mapping, Sequence
+from typing import Dict, List, Literal, Mapping, Sequence
 
 from pydantic import BaseModel
 
@@ -10,21 +10,21 @@ EntityFilterItem = Mapping[str, str | Sequence[str]]
 EntityFilterQuery = Sequence[EntityFilterItem]
 
 
-class EntityOrderQuery(BaseModel):
-    # Implementation details of EntityOrderQuery
-    pass
-
-
 class SerializedError(BaseModel):
     # Implementation details of SerializedError
     pass
 
 
+class EntityOrderQuery(BaseModel):
+    field: str
+    order: Literal["asc"] | Literal["desc"]
+
+
 class GetEntitiesRequest(BaseModel):
     # Implementation details of GetEntitiesRequest
     filter: EntityFilterQuery | None = None
-    fields: bool | None = None
-    order: bool | None = None
+    fields: list[str] | None = None
+    order: EntityOrderQuery | Sequence[EntityOrderQuery] | None = None
     offset: int | None = None
     limit: int | None = None
     after: str | None = None
