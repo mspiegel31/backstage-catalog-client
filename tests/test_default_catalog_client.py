@@ -5,16 +5,27 @@ from conftest import mock_base_url
 
 from backstage_catalog_client.api_client import CATALOG_FILTER_EXISTS, CatalogApi
 from backstage_catalog_client.models import GetEntitiesRequest
+from backstage_catalog_client.raw_entity import RawEntity
+
+entities: list[RawEntity] = [
+    {
+        "apiVersion": "backstage.io/v1alpha1",
+        "kind": "Component",
+        "metadata": {"name": "wayback-search"},
+        "spec": {"type": "service"},
+    },
+    {
+        "apiVersion": "backstage.io/v1alpha1",
+        "kind": "Component",
+        "metadata": {"name": "www-artist"},
+        "spec": {"type": "service"},
+    },
+]
 
 
 @pytest.fixture(scope="session")
-def entities_subset(all_entities) -> list[dict]:
-    return all_entities[:2]
-
-
-@pytest.fixture(scope="session")
-def entities_response(entities_subset) -> httpx.Response:
-    return httpx.Response(200, json=entities_subset)
+def entities_response() -> httpx.Response:
+    return httpx.Response(200, json=entities)
 
 
 @pytest.fixture()
@@ -32,11 +43,10 @@ class TestGetEntities:
         pass
 
     @staticmethod
-    async def test_it_should_fetch_from_the_correct_endpoint(catalog_api: CatalogApi, entities_subset):
+    async def test_it_should_fetch_from_the_correct_endpoint(catalog_api: CatalogApi):
         request = GetEntitiesRequest()
         response = await catalog_api.getEntities(request, options=None)
-        final_entities = [item.model_dump(exclude_unset=True) for item in response.items]
-        assert final_entities == entities_subset
+        assert response.items == entities
 
     @staticmethod
     async def test_it_should_build_multiple_entity_search_params_properly(
@@ -81,5 +91,4 @@ class TestGetEntities:
         )
         request = GetEntitiesRequest(fields=["apiVersion"])
         response = await catalog_api.getEntities(request)
-        actual = [item.model_dump(exclude_unset=True) for item in response.items]
-        assert actual == [{"apiVersion": "1"}, {"apiVersion": "2"}]
+        assert response.items == [{"apiVersion": "1"}, {"apiVersion": "2"}]

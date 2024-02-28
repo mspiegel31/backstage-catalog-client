@@ -42,4 +42,3 @@ class Entity(BaseModel):
     relations: Optional[list[common.Relation]] = Field(
         None, description="The relations that this entity has with other entities."
     )
-    status: Optional[common.Status] = None

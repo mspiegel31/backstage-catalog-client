@@ -3,6 +3,7 @@ from typing import Dict, List, Literal, Mapping, Sequence
 from pydantic import BaseModel
 
 from backstage_catalog_client.entity.Entity import Entity
+from backstage_catalog_client.raw_entity import RawEntity
 
 # check out key ordering issues in pydantic here:
 # https://github.com/tiangolo/fastapi/discussions/7943
@@ -31,8 +32,7 @@ class GetEntitiesRequest(BaseModel):
 
 
 class GetEntitiesResponse(BaseModel):
-    # Implementation details of GetEntitiesResponse
-    items: list[Entity]
+    items: list[RawEntity]
 
 
 class GetEntitiesByRefsRequest(BaseModel):

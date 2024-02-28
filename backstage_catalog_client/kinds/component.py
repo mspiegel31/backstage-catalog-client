@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from backstage_catalog_client.entities import Entity
+from backstage_catalog_client.raw_entity import Entity
 
 
 class ComponentSpec(BaseModel):

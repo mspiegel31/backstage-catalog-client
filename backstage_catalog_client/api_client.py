@@ -112,8 +112,7 @@ class DefaultCatalogApi(CatalogApi):
         if response.status_code != 200:
             raise Exception(response.text)
         raw = response.json()
-        items = [Entity.model_validate(item) for item in raw]
-        return GetEntitiesResponse(items=items)
+        return GetEntitiesResponse(items=raw)
 
     def get_filter_value(self, filter: EntityFilterQuery = []):
         prepared_filters = []
