@@ -9,6 +9,7 @@ import respx
 from backstage_catalog_client.api_client import DefaultCatalogApi
 
 DATA_DIR = Path(__file__).parent / "data"
+
 # https://demo.backstage.io/api/catalog/entities
 mock_base_url = "https://foo.bar/api/catalog"
 
@@ -29,7 +30,7 @@ def entities_response(all_entities) -> httpx.Response:
     return httpx.Response(200, json=all_entities)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def mocked_entities(entities_response: httpx.Response):
     with respx.mock(base_url=mock_base_url) as respx_mock:
         respx_mock.get(f"{mock_base_url}/entities").mock(return_value=entities_response)
