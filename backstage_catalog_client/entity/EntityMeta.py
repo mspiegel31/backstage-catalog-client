@@ -79,19 +79,19 @@ class Model(BaseModel):
         None,
         description="A short (typically relatively few words, on one line) description of the entity.",
     )
-    labels: Optional[dict[str, str]] = Field(
-        None,
+    labels: dict[str, str] = Field(
+        {},
         description="Key/value pairs of identifying information attached to the entity.",
     )
     annotations: dict[str, str] = Field(
         {},
         description="Key/value pairs of non-identifying auxiliary information attached to the entity.",
     )
-    tags: Optional[list[Tag]] = Field(
-        None,
+    tags: list[Tag] = Field(
+        [],
         description="A list of single-valued strings, to for example classify catalog entities in various ways.",
     )
-    links: Optional[list[Link]] = Field(
-        None,
+    links: list[Link] = Field(
+        [],
         description="A list of external hyperlinks related to the entity. Links can provide additional contextual information that may be located outside of Backstage itself. For example, an admin dashboard or external CMS page.",
     )
