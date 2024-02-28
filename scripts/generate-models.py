@@ -2,6 +2,7 @@ import asyncio
 import os
 from base64 import b64decode
 from pathlib import Path
+from typing import Any
 from urllib.parse import urljoin
 
 import httpx
@@ -37,7 +38,7 @@ async def get_schema_tree(schema_request: str):
     return tree_resp.json()
 
 
-async def write_schemas(tree_resp: list[dict]):
+async def write_schemas(tree_resp: dict[str, Any]):
     schemas = ROOT / Path("schemas")
     schemas.mkdir(exist_ok=True)
 

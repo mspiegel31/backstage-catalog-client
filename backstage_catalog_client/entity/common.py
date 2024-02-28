@@ -10,13 +10,6 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class Model(BaseModel):
-    pass
-    model_config = ConfigDict(
-        extra="allow",
-    )
-
-
 class Reference(BaseModel):
     model_config = ConfigDict(
         extra="forbid",

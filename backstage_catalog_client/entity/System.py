@@ -7,9 +7,9 @@ from __future__ import annotations
 from enum import Enum
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
-from .Entity import Entity as Model_1
+from backstage_catalog_client.entity.Entity import Entity
 
 
 class ApiVersion(Enum):
@@ -36,10 +36,12 @@ class Spec(BaseModel):
     )
 
 
-class System(Model_1):
-    model_config = ConfigDict(
-        extra="allow",
-    )
-    apiVersion: Optional[ApiVersion] = None
+class System(Entity):
+    apiVersion: ApiVersion = ApiVersion.backstage_io_v1beta1
     kind: Literal["System"] = "System"
     spec: Spec
+
+    # maybe a bit of hack, but we want some default values to continue to show up when calling model.model_dump()
+    def model_post_init(self):
+        self.__pydantic_fields_set__.add("kind")
+        self.__pydantic_fields_set__.add("apiVersion")

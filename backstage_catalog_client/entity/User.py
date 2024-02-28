@@ -9,7 +9,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
-from .Entity import Entity as Model_1
+from backstage_catalog_client.entity.Entity import Entity
 
 
 class ApiVersion(Enum):
@@ -57,10 +57,15 @@ class Spec(BaseModel):
     )
 
 
-class User(Model_1):
+class User(Entity):
     model_config = ConfigDict(
         extra="allow",
     )
     apiVersion: Optional[ApiVersion] = None
     kind: Literal["User"] = "User"
     spec: Spec
+
+    # maybe a bit of hack, but we want some default values to continue to show up when calling model.model_dump()
+    def model_post_init(self):
+        self.__pydantic_fields_set__.add("kind")
+        self.__pydantic_fields_set__.add("apiVersion")
