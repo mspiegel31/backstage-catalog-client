@@ -32,6 +32,6 @@ class Domain(Entity):
     spec: Spec
 
     # maybe a bit of hack, but we want some default values to continue to show up when calling model.model_dump()
-    def model_post_init(self, context):
+    def model_post_init(self):
         self.__pydantic_fields_set__.add("kind")
         self.__pydantic_fields_set__.add("apiVersion")
