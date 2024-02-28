@@ -39,6 +39,4 @@ class Entity(BaseModel):
     )
     metadata: EntityMeta.Model
     spec: Optional[dict[str, Any]] = Field(None, description="The specification data describing the entity itself.")
-    relations: Optional[list[common.Relation]] = Field(
-        None, description="The relations that this entity has with other entities."
-    )
+    relations: list[common.Relation] = Field([], description="The relations that this entity has with other entities.")

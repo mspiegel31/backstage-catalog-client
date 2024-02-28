@@ -83,8 +83,8 @@ class Model(BaseModel):
         None,
         description="Key/value pairs of identifying information attached to the entity.",
     )
-    annotations: Optional[dict[str, str]] = Field(
-        None,
+    annotations: dict[str, str] = Field(
+        {},
         description="Key/value pairs of non-identifying auxiliary information attached to the entity.",
     )
     tags: Optional[list[Tag]] = Field(

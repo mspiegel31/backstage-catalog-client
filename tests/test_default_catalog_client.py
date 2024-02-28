@@ -1,3 +1,5 @@
+from typing import Callable
+
 import httpx
 import pytest
 import respx
@@ -22,25 +24,31 @@ entities: list[RawEntity] = [
     },
 ]
 
-
-@pytest.fixture(scope="session")
-def entities_response() -> httpx.Response:
-    return httpx.Response(200, json=entities)
+ResponseClosure = Callable[[list[RawEntity]], respx.Router]
 
 
 @pytest.fixture()
-def mocked_entities(entities_response: httpx.Response):
-    with respx.mock(base_url=mock_base_url) as respx_mock:
-        respx_mock.get(f"{mock_base_url}/entities").mock(return_value=entities_response)
-        yield respx_mock
+def with_reponse_data(respx_mock) -> ResponseClosure:
+    def inner(data: list[RawEntity]):
+        response = httpx.Response(200, json=data)
+        respx_mock.get(f"{mock_base_url}/entities").mock(return_value=response)
+        return respx_mock
+
+    return inner
+
+
+@pytest.fixture()
+def default_router(respx_mock):
+    response = httpx.Response(200, json=entities)
+    yield respx_mock.get(f"{mock_base_url}/entities").mock(return_value=response)
 
 
 @pytest.mark.asyncio(scope="class")
 class TestGetEntities:
     @staticmethod
     @pytest.fixture(autouse=True)
-    def _setup(mocked_entities):
-        pass
+    def _setup(with_reponse_data):
+        with_reponse_data(entities)
 
     @staticmethod
     async def test_it_should_fetch_from_the_correct_endpoint(catalog_api: CatalogApi):
@@ -50,7 +58,8 @@ class TestGetEntities:
 
     @staticmethod
     async def test_it_should_build_multiple_entity_search_params_properly(
-        catalog_api: CatalogApi, mocked_entities: respx.Router
+        catalog_api: CatalogApi,
+        default_router: respx.Router,
     ):
         query_filter = [
             {"a": "1"},
@@ -60,12 +69,12 @@ class TestGetEntities:
         ]
         request = GetEntitiesRequest(filter=query_filter)
         await catalog_api.getEntities(request)
-        actual = mocked_entities.calls.last.request.url.params.get_list("filter")
+        actual = default_router.calls.last.request.url.params.get_list("filter")
         assert actual == ["a=1", "b=2,b=3", "c==", "d"]
 
     @staticmethod
     async def test_it_builds_search_filters_properly_even_with_URL_unsafe_values(
-        catalog_api: CatalogApi, mocked_entities: respx.Router
+        catalog_api: CatalogApi, default_router: respx.Router
     ):
         query_filter = [
             {
@@ -74,21 +83,19 @@ class TestGetEntities:
             }
         ]
         await catalog_api.getEntities(GetEntitiesRequest(filter=query_filter))
-        actual = mocked_entities.calls.last.request.url.params.get_list("filter")
+        actual = default_router.calls.last.request.url.params.get_list("filter")
         assert actual == ["!@#$%=t?i=1&a:2,^&*(){}[]=t%^url*encoded2,^&*(){}[]=url"]
 
     @staticmethod
-    async def test_it_builds_entity_field_selector_properly(catalog_api: CatalogApi, mocked_entities: respx.Router):
+    async def test_it_builds_entity_field_selector_properly(catalog_api: CatalogApi, default_router: respx.Router):
         request = GetEntitiesRequest(fields=["metadata.name", "spec.type"])
         await catalog_api.getEntities(request)
-        actual = mocked_entities.calls.last.request.url.params.get_list("fields")
-        assert actual == ["metadata.name", "spec.type"]
+        actual = default_router.calls.last.request.url.params.get_list("fields")
+        assert actual == request.fields
 
     @staticmethod
-    async def test_it_handles_field_filterd_entities(catalog_api: CatalogApi, mocked_entities: respx.Router):
-        mocked_entities.get(f"{mock_base_url}/entities").mock(
-            return_value=httpx.Response(200, json=[{"apiVersion": "1"}, {"apiVersion": "2"}])
-        )
+    async def test_it_handles_field_filterd_entities(catalog_api: CatalogApi, with_reponse_data: ResponseClosure):
+        with_reponse_data([{"apiVersion": "1"}, {"apiVersion": "2"}])
         request = GetEntitiesRequest(fields=["apiVersion"])
         response = await catalog_api.getEntities(request)
         assert response.items == [{"apiVersion": "1"}, {"apiVersion": "2"}]

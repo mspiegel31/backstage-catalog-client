@@ -9,7 +9,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from .Entity import Entity as Model_1
+from backstage_catalog_client.entity.Entity import Entity
 
 
 class ApiVersion(Enum):
@@ -26,7 +26,7 @@ class Spec(BaseModel):
     )
 
 
-class Domain(Model_1):
+class Domain(Entity):
     model_config = ConfigDict(
         extra="allow",
     )
