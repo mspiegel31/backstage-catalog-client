@@ -27,7 +27,7 @@ class Metadata(BaseModel):
     )
 
 
-class Model(BaseModel):
+class EntityEnvelope(BaseModel):
     model_config = ConfigDict(
         extra="allow",
     )

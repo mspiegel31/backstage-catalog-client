@@ -8,7 +8,9 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import EntityMeta, common
+from backstage_catalog_client.entity import EntityMeta, common
+
+# TODO: custom serializers: https://docs.pydantic.dev/latest/api/functional_serializers/#pydantic.functional_serializers.model_serializer
 
 
 class Entity(BaseModel):
