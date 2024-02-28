@@ -73,3 +73,13 @@ class TestGetEntities:
         await catalog_api.getEntities(request)
         actual = mocked_entities.calls.last.request.url.params.get_list("fields")
         assert actual == ["metadata.name", "spec.type"]
+
+    @staticmethod
+    async def test_it_handles_field_filterd_entities(catalog_api: CatalogApi, mocked_entities: respx.Router):
+        mocked_entities.get(f"{mock_base_url}/entities").mock(
+            return_value=httpx.Response(200, json=[{"apiVersion": "1"}, {"apiVersion": "2"}])
+        )
+        request = GetEntitiesRequest(fields=["apiVersion"])
+        response = await catalog_api.getEntities(request)
+        actual = [item.model_dump(exclude_unset=True) for item in response.items]
+        assert actual == [{"apiVersion": "1"}, {"apiVersion": "2"}]
