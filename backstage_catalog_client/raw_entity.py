@@ -1,36 +1,43 @@
-from typing import Any, Optional
+from typing import Any, Dict, List, NotRequired
 
 from typing_extensions import TypedDict
 
 
-class RawEntityRelation(TypedDict, total=False):
+class RawEntityTargetRef(TypedDict):
+    kind: str
+    namespace: str
+    name: str
+
+
+class RawEntityRelation(TypedDict):
     type: str
     targetRef: str
+    target: RawEntityTargetRef
 
 
-class RawEntityLink(TypedDict, total=False):
+class RawEntityLink(TypedDict):
     url: str
-    title: Optional[str]
-    icon: Optional[str]
-    type: Optional[str]
+    title: NotRequired[str]
+    icon: NotRequired[str]
+    type: NotRequired[str]
 
 
-class RawEntityMeta(TypedDict, total=False):
+class RawEntityMeta(TypedDict):
+    uid: NotRequired[str]
+    etag: NotRequired[str]
     name: str
-    uid: Optional[str]
-    etag: Optional[str]
-    namespace: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    labels: Optional[dict[str, str]]
-    annotations: Optional[dict[str, str]]
-    tags: Optional[list[str]]
-    links: Optional[list[RawEntityLink]]
+    namespace: NotRequired[str]
+    title: NotRequired[str]
+    description: NotRequired[str]
+    labels: NotRequired[Dict[str, str]]
+    annotations: NotRequired[Dict[str, str]]
+    tags: NotRequired[List[str]]
+    links: NotRequired[List[RawEntityLink]]
 
 
-class RawEntity(TypedDict, total=False):
+class RawEntity(TypedDict):
     apiVersion: str
     kind: str
     metadata: RawEntityMeta
-    spec: Optional[dict[str, Any]]
-    relations: Optional[list[RawEntityRelation]]
+    spec: NotRequired[Dict[str, Any]]
+    relations: NotRequired[list[RawEntityRelation]]
