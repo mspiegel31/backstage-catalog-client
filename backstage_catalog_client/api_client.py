@@ -1,6 +1,5 @@
 from typing import Protocol
 
-from backstage_catalog_client.entity.entity import Entity
 from backstage_catalog_client.models import (
     AddLocationRequest,
     AddLocationResponse,
@@ -19,6 +18,7 @@ from backstage_catalog_client.models import (
     QueryEntitiesResponse,
     ValidateEntityResponse,
 )
+from backstage_catalog_client.raw_entity import RawEntity
 
 # Random UUID to ensure no collisions
 CATALOG_FILTER_EXISTS = "CATALOG_FILTER_EXISTS_0e15b590c0b343a2bae3e787e84c2111"
@@ -60,7 +60,7 @@ class TODOCatalogApi(Protocol):
         self,
         entityRef: str | CompoundEntityRef,
         options: CatalogRequestOptions | None,
-    ) -> Entity | None: ...
+    ) -> RawEntity | None: ...
 
     async def removeEntityByUid(self, uid: str, options: CatalogRequestOptions | None) -> None: ...
 
@@ -87,5 +87,5 @@ class TODOCatalogApi(Protocol):
     ) -> Location | None: ...
 
     async def validateEntity(
-        self, entity: Entity, locationRef: str, options: CatalogRequestOptions | None
+        self, entity: RawEntity, locationRef: str, options: CatalogRequestOptions | None
     ) -> ValidateEntityResponse: ...

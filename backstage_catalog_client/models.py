@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict, List, Literal, Mapping, Optional, Sequence, Union
 
-from backstage_catalog_client.entity.entity import Entity
 from backstage_catalog_client.raw_entity import RawEntity
 
 # check out key ordering issues in pydantic here:
@@ -93,7 +92,7 @@ class AddLocationRequest:
 @dataclass
 class AddLocationResponse:
     location: Location
-    entities: List[Entity]
+    entities: List[RawEntity]
     exists: Optional[bool]
 
 
@@ -126,6 +125,6 @@ class QueryEntitiesRequest:
 
 @dataclass
 class QueryEntitiesResponse:
-    items: List[Entity]
+    items: List[RawEntity]
     totalItems: int
     pageInfo: Dict[str, Optional[str]]
