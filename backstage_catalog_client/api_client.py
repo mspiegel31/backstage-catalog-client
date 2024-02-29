@@ -95,11 +95,20 @@ class TODOCatalogApi(Protocol):
 CATALOG_FILTER_EXISTS = "CATALOG_FILTER_EXISTS_0e15b590c0b343a2bae3e787e84c2111"
 
 
-class DefaultCatalogApi(CatalogApi):
-    client: AsyncClient
+CATALOG_API_BASE_PATH = "/api/catalog"
 
-    def __init__(self, client: AsyncClient) -> None:
-        self.client = client
+
+class DefaultCatalogApi(CatalogApi):
+    def __init__(self, base_url: str, client: AsyncClient | None = None) -> None:
+        # catalog_api_path = urljoin(base_url, CATALOG_API_BASE_PATH)
+        if client is None:
+            self.client = AsyncClient()
+        else:
+            self.client = client
+        if str(self.client.base_url):
+            self.base_url = str(self.client.base_url)
+        else:
+            self.base_url = base_url
 
     async def getEntities(
         self,
@@ -115,7 +124,7 @@ class DefaultCatalogApi(CatalogApi):
         if request.filter:
             dict_request["filter"] = self.get_filter_value(request.filter)
 
-        response = await self.client.get("/entities", params=dict_request)
+        response = await self.client.get(f"{self.base_url}/entities", params=dict_request)
         if response.status_code != 200:
             raise Exception(response.text)
 
