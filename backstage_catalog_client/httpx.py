@@ -1,6 +1,8 @@
+from urllib.parse import urljoin
+
 from httpx import AsyncClient
 
-from backstage_catalog_client.api_client import CATALOG_FILTER_EXISTS, CatalogApi
+from backstage_catalog_client.api_client import CATALOG_API_BASE_PATH, CATALOG_FILTER_EXISTS, CatalogApi
 from backstage_catalog_client.models import (
     CatalogRequestOptions,
     EntityFilterQuery,
@@ -12,16 +14,12 @@ from backstage_catalog_client.utils import to_dict
 
 class DefaultCatalogApi(CatalogApi):
     def __init__(self, base_url: str, client: AsyncClient | None = None) -> None:
-        # catalog_api_path = urljoin(base_url, CATALOG_API_BASE_PATH)
+        self.catalog_api_path = urljoin(base_url, CATALOG_API_BASE_PATH)
+        self.base_url = base_url
         if client is None:
             self.client = AsyncClient()
         else:
             self.client = client
-
-        if str(self.client.base_url):
-            self.base_url = str(self.client.base_url)
-        else:
-            self.base_url = base_url
 
     async def getEntities(
         self,
@@ -37,7 +35,7 @@ class DefaultCatalogApi(CatalogApi):
         if request.filter:
             dict_request["filter"] = self._get_filter_value(request.filter)
 
-        response = await self.client.get(f"{self.base_url}/entities", params=dict_request)
+        response = await self.client.get(f"{self.catalog_api_path}/entities", params=dict_request)
         if response.status_code != 200:
             raise Exception(response.text)
 

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from typing import Any
 
 import httpx
 import pytest
@@ -20,13 +21,13 @@ def all_entities():
 
 
 @pytest.fixture(scope="session")
-def components(all_entities) -> list[dict]:
+def components(all_entities: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [entity for entity in all_entities if entity["kind"].lower() == "component"]
 
 
 @pytest_asyncio.fixture(scope="session")
 async def httpx_client():
-    async with httpx.AsyncClient(base_url=mock_base_url) as client:
+    async with httpx.AsyncClient() as client:
         yield client
 
 
