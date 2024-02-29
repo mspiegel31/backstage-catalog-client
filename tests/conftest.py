@@ -5,7 +5,7 @@ import httpx
 import pytest
 import pytest_asyncio
 
-from backstage_catalog_client.api_client import DefaultCatalogApi
+from backstage_catalog_client.httpx import DefaultCatalogApi
 
 DATA_DIR = Path(__file__).parent / "data"
 
