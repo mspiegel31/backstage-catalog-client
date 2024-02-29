@@ -2,7 +2,7 @@ from typing import Dict, List, Literal, Mapping, Sequence
 
 from pydantic import BaseModel
 
-from backstage_catalog_client.entity.Entity import Entity
+from backstage_catalog_client.entity.entity import Entity
 from backstage_catalog_client.raw_entity import RawEntity
 
 # check out key ordering issues in pydantic here:
