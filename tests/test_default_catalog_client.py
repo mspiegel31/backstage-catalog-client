@@ -28,7 +28,7 @@ ResponseClosure = Callable[[list[RawEntity]], respx.Router]
 
 
 @pytest.fixture()
-def with_reponse_data(respx_mock) -> ResponseClosure:
+def with_reponse_data(respx_mock: respx.Router) -> ResponseClosure:
     def inner(data: list[RawEntity]):
         response = httpx.Response(200, json=data)
         respx_mock.get(f"{mock_base_url}/entities").mock(return_value=response)
@@ -38,7 +38,7 @@ def with_reponse_data(respx_mock) -> ResponseClosure:
 
 
 @pytest.fixture()
-def default_router(respx_mock):
+def default_router(respx_mock: respx.Router):
     response = httpx.Response(200, json=entities)
     yield respx_mock.get(f"{mock_base_url}/entities").mock(return_value=response)
 
@@ -47,8 +47,8 @@ def default_router(respx_mock):
 class TestGetEntities:
     @staticmethod
     @pytest.fixture(autouse=True)
-    def _setup(with_reponse_data):
-        with_reponse_data(entities)
+    def _setup(default_router: respx.Router):
+        yield
 
     @staticmethod
     async def test_it_should_fetch_from_the_correct_endpoint(catalog_api: CatalogApi):
@@ -95,7 +95,7 @@ class TestGetEntities:
 
     @staticmethod
     async def test_it_handles_field_filterd_entities(catalog_api: CatalogApi, with_reponse_data: ResponseClosure):
-        with_reponse_data([{"apiVersion": "1"}, {"apiVersion": "2"}])
+        with_reponse_data([{"apiVersion": "1"}, {"apiVersion": "2"}])  # type: ignore
         request = GetEntitiesRequest(fields=["apiVersion"])
         response = await catalog_api.getEntities(request)
         assert response.items == [{"apiVersion": "1"}, {"apiVersion": "2"}]

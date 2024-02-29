@@ -29,7 +29,11 @@ class CatalogApi(Protocol):
         self,
         request: GetEntitiesRequest | None = None,
         options: CatalogRequestOptions | None = None,
-    ) -> GetEntitiesResponse: ...
+    ) -> GetEntitiesResponse:
+        """
+        docs go here
+        """
+        ...
 
 
 class TODOCatalogApi(Protocol):
