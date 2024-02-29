@@ -9,7 +9,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, RootModel
 
-from backstage_catalog_client.entity.Entity import Entity
+from backstage_catalog_client.entity.entity import Entity
 
 
 class ApiVersion(Enum):

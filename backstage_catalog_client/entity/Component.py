@@ -7,9 +7,9 @@ from __future__ import annotations
 from enum import Enum
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, Field, RootModel
 
-from .Entity import Entity
+from backstage_catalog_client.entity.entity import Entity
 
 
 class ApiVersion(Enum):
@@ -77,9 +77,10 @@ class Spec(BaseModel):
 
 
 class Component(Entity):
-    model_config = ConfigDict(
-        extra="allow",
-    )
-    apiVersion: Optional[ApiVersion] = None
+    apiVersion: ApiVersion = ApiVersion.backstage_io_v1beta1
     kind: Literal["Component"] = "Component"
     spec: Spec
+
+    def model_post_init(self, context):
+        self.__pydantic_fields_set__.add("kind")
+        self.__pydantic_fields_set__.add("apiVersion")

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -38,5 +38,5 @@ class Entity(BaseModel):
         min_length=1,
     )
     metadata: entity_meta.Model
-    spec: Optional[dict[str, Any]] = Field(None, description="The specification data describing the entity itself.")
+    spec: dict[str, Any] = Field({}, description="The specification data describing the entity itself.")
     relations: list[common.Relation] = Field([], description="The relations that this entity has with other entities.")
