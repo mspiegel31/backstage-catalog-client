@@ -31,6 +31,8 @@ class CatalogApi(Protocol):
         options: CatalogRequestOptions | None = None,
     ) -> GetEntitiesResponse: ...
 
+
+class TODOCatalogApi(Protocol):
     async def getEntitiesByRefs(
         self,
         request: GetEntitiesByRefsRequest,
