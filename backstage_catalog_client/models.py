@@ -1,6 +1,5 @@
-from typing import Dict, List, Literal, Mapping, Sequence
-
-from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import Dict, List, Literal, Mapping, Optional, Sequence, Union
 
 from backstage_catalog_client.entity.entity import Entity
 from backstage_catalog_client.raw_entity import RawEntity
@@ -11,111 +10,122 @@ EntityFilterItem = Mapping[str, str | Sequence[str]]
 EntityFilterQuery = Sequence[EntityFilterItem]
 
 
-class SerializedError(BaseModel):
-    # Implementation details of SerializedError
+@dataclass
+class SerializedError:
     pass
 
 
-class EntityOrderQuery(BaseModel):
+@dataclass
+class EntityOrderQuery:
     field: str
-    order: Literal["asc"] | Literal["desc"]
+    order: Literal["asc", "desc"]
 
 
-class GetEntitiesRequest(BaseModel):
-    # Implementation details of GetEntitiesRequest
-    filter: EntityFilterQuery | None = None
-    fields: list[str] | None = None
-    order: EntityOrderQuery | Sequence[EntityOrderQuery] | None = None
-    offset: int | None = None
-    limit: int | None = None
-    after: str | None = None
+@dataclass
+class GetEntitiesRequest:
+    filter: Optional[EntityFilterQuery] = None
+    fields: Optional[List[str]] = None
+    order: Optional[Union[EntityOrderQuery, Sequence[EntityOrderQuery]]] = None
+    offset: Optional[int] = None
+    limit: Optional[int] = None
+    after: Optional[str] = None
 
 
-class GetEntitiesResponse(BaseModel):
-    items: list[RawEntity]
+@dataclass
+class GetEntitiesResponse:
+    items: List[RawEntity]
 
 
-class GetEntitiesByRefsRequest(BaseModel):
-    # Implementation details of GetEntitiesByRefsRequest
+@dataclass
+class GetEntitiesByRefsRequest:
     pass
 
 
-class GetEntitiesByRefsResponse(BaseModel):
-    # Implementation details of GetEntitiesByRefsResponse
+@dataclass
+class GetEntitiesByRefsResponse:
     pass
 
 
-class GetEntityAncestorsRequest(BaseModel):
-    # Implementation details of GetEntityAncestorsRequest
+@dataclass
+class GetEntityAncestorsRequest:
     pass
 
 
-class GetEntityAncestorsResponse(BaseModel):
-    # Implementation details of GetEntityAncestorsResponse
+@dataclass
+class GetEntityAncestorsResponse:
     pass
 
 
-class CompoundEntityRef(BaseModel):
-    # Implementation details of CompoundEntityRef
+@dataclass
+class CompoundEntityRef:
     pass
 
 
-class GetEntityFacetsRequest(BaseModel):
-    # Implementation details of GetEntityFacetsRequest
+@dataclass
+class GetEntityFacetsRequest:
     pass
 
 
-class GetEntityFacetsResponse(BaseModel):
-    # Implementation details of GetEntityFacetsResponse
+@dataclass
+class GetEntityFacetsResponse:
     pass
 
 
-class CatalogRequestOptions(BaseModel):
-    token: str | None = None
+@dataclass
+class CatalogRequestOptions:
+    token: Optional[str] = None
 
 
-class Location(BaseModel):
+@dataclass
+class Location:
     id: str
     type: str
     target: str
 
 
-class AddLocationRequest(BaseModel):
-    type: str | None
+@dataclass
+class AddLocationRequest:
+    type: Optional[str]
     target: str
-    dryRun: bool | None
+    dryRun: Optional[bool]
 
 
-class AddLocationResponse(BaseModel):
+@dataclass
+class AddLocationResponse:
     location: Location
     entities: List[Entity]
-    exists: bool | None
+    exists: Optional[bool]
 
 
-class ValidateEntityResponse(BaseModel):
+@dataclass
+class ValidateEntityResponse:
     valid: bool
     errors: List[SerializedError]
 
 
-class QueryEntitiesInitialRequest(BaseModel):
-    fields: List[str] | None
-    limit: int | None
-    filter: EntityFilterQuery | None
-    orderFields: EntityOrderQuery | None
-    fullTextFilter: Dict[str, str | List[str]] | None
+@dataclass
+class QueryEntitiesInitialRequest:
+    fields: Optional[List[str]]
+    limit: Optional[int]
+    filter: Optional[EntityFilterQuery]
+    orderFields: Optional[EntityOrderQuery]
+    fullTextFilter: Optional[Dict[str, Union[str, List[str]]]]
 
 
-class QueryEntitiesCursorRequest(BaseModel):
-    fields: List[str] | None
-    limit: int | None
+@dataclass
+class QueryEntitiesCursorRequest:
+    fields: Optional[List[str]]
+    limit: Optional[int]
     cursor: str
 
 
-class QueryEntitiesRequest(BaseModel):
-    filter: QueryEntitiesInitialRequest | QueryEntitiesCursorRequest | None
+@dataclass
+class QueryEntitiesRequest:
+    filter: Optional[Union[QueryEntitiesInitialRequest, QueryEntitiesCursorRequest]]
 
 
-class QueryEntitiesResponse(BaseModel):
+@dataclass
+class QueryEntitiesResponse:
     items: List[Entity]
     totalItems: int
-    pageInfo: Dict[str, str | None]
+    pageInfo: Dict[str, Optional[str]]

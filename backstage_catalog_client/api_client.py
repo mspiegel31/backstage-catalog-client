@@ -22,6 +22,7 @@ from backstage_catalog_client.models import (
     QueryEntitiesResponse,
     ValidateEntityResponse,
 )
+from backstage_catalog_client.utils import to_dict
 
 
 class CatalogApi(Protocol):
@@ -110,7 +111,7 @@ class DefaultCatalogApi(CatalogApi):
         if options is None:
             options = CatalogRequestOptions()
 
-        dict_request = request.model_dump(exclude_unset=True)
+        dict_request = to_dict(request)
         if request.filter:
             dict_request["filter"] = self.get_filter_value(request.filter)
 
@@ -118,7 +119,7 @@ class DefaultCatalogApi(CatalogApi):
         if response.status_code != 200:
             raise Exception(response.text)
 
-        return GetEntitiesResponse.model_construct(items=response.json())
+        return GetEntitiesResponse(items=response.json())
 
     def get_filter_value(self, filter: EntityFilterQuery = []):
         prepared_filters: list[str] = []
