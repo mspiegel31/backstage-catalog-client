@@ -7,7 +7,7 @@ class IsDataclass(Protocol):
     __dataclass_fields__: ClassVar[Dict[str, Any]]
 
 
-def to_dict(obj: IsDataclass, exclude_none: bool = True):
+def to_dict(obj: IsDataclass, exclude_none: bool = True) -> dict[str, Any]:
     d = dataclasses.asdict(obj)
     if exclude_none:
         return {k: v for k, v in d.items() if v is not None}
@@ -36,7 +36,7 @@ def parse_ref_string(ref: str):
     namespace = None if slashI == -1 else ref[colonI + 1 : slashI]
     name = ref[max(colonI + 1, slashI + 1) :]
 
-    if not kind or not namespace or not name:
+    if not (kind and namespace and name):
         raise TypeError(f'Entity reference "{ref}" was not on the form [<kind>:][<namespace>/]<name>')
 
     return EntityRef(kind=kind, namespace=namespace, name=name)

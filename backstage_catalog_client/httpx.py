@@ -2,10 +2,9 @@ from urllib.parse import urljoin
 
 from httpx import AsyncClient
 
-from backstage_catalog_client.api_client import CATALOG_API_BASE_PATH, CATALOG_FILTER_EXISTS, CatalogApi
+from backstage_catalog_client.catalog_api import CATALOG_API_BASE_PATH, CatalogApi, get_filter_value
 from backstage_catalog_client.models import (
     CatalogRequestOptions,
-    EntityFilterQuery,
     GetEntitiesRequest,
     GetEntitiesResponse,
 )
@@ -33,30 +32,10 @@ class DefaultCatalogApi(CatalogApi):
 
         dict_request = to_dict(request)
         if request.filter:
-            dict_request["filter"] = self._get_filter_value(request.filter)
+            dict_request["filter"] = get_filter_value(request.filter)
 
         response = await self.client.get(f"{self.catalog_api_path}/entities", params=dict_request)
         if response.status_code != 200:
             raise Exception(response.text)
 
         return GetEntitiesResponse(items=response.json())
-
-    def _get_filter_value(self, filter: EntityFilterQuery = []):
-        prepared_filters: list[str] = []
-        # filter param can occur multiple times, for example
-        # /api/catalog/entities?filter=metadata.name=wayback-search,kind=component&filter=metadata.name=www-artist,kind=component'
-        # the "outer array" defined by `filter` occurrences corresponds to "anyOf" filters
-        # the "inner array" defined within a `filter` param corresponds to "allOf" filters
-
-        for filter_item in filter:
-            filter_parts: list[str] = []
-            for key, value in filter_item.items():
-                v_iter = value if isinstance(value, list) else [value]
-                for v in v_iter:
-                    if v == CATALOG_FILTER_EXISTS:
-                        filter_parts.append(key)
-                    elif isinstance(v, str):
-                        filter_parts.append(f"{key}={v}")
-            if filter_parts:
-                prepared_filters.append(",".join(filter_parts))
-        return prepared_filters

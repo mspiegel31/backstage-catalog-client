@@ -32,5 +32,5 @@ async def httpx_client():
 
 
 @pytest.fixture()
-def httpx_catalog_client(httpx_client: httpx.AsyncClient):
+def httpx_catalog_client():
     yield DefaultCatalogApi(mock_base_url)

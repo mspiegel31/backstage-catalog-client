@@ -5,7 +5,7 @@ import pytest
 import respx
 from conftest import mock_base_url
 
-from backstage_catalog_client.api_client import CATALOG_FILTER_EXISTS, CatalogApi
+from backstage_catalog_client.catalog_api import CATALOG_FILTER_EXISTS, CatalogApi
 from backstage_catalog_client.models import GetEntitiesRequest
 from backstage_catalog_client.raw_entity import RawEntity
 
