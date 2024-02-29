@@ -98,7 +98,7 @@ class DefaultCatalogApi(CatalogApi):
 
     async def getEntities(
         self,
-        request: GetEntitiesRequest | None,
+        request: GetEntitiesRequest | None = None,
         options: CatalogRequestOptions | None = None,
     ):
         if request is None:
@@ -113,11 +113,10 @@ class DefaultCatalogApi(CatalogApi):
         response = await self.client.get("/entities", params=dict_request)
         if response.status_code != 200:
             raise Exception(response.text)
-        raw = response.json()
-        return GetEntitiesResponse(items=raw)
+        return GetEntitiesResponse(items=response.json())
 
     def get_filter_value(self, filter: EntityFilterQuery = []):
-        prepared_filters = []
+        prepared_filters: list[str] = []
         # filter param can occur multiple times, for example
         # /api/catalog/entities?filter=metadata.name=wayback-search,kind=component&filter=metadata.name=www-artist,kind=component'
         # the "outer array" defined by `filter` occurrences corresponds to "anyOf" filters
