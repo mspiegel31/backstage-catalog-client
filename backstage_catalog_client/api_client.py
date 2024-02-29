@@ -117,7 +117,8 @@ class DefaultCatalogApi(CatalogApi):
         response = await self.client.get("/entities", params=dict_request)
         if response.status_code != 200:
             raise Exception(response.text)
-        return GetEntitiesResponse(items=response.json())
+
+        return GetEntitiesResponse.model_construct(items=response.json())
 
     def get_filter_value(self, filter: EntityFilterQuery = []):
         prepared_filters: list[str] = []
