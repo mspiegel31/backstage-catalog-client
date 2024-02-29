@@ -8,9 +8,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from backstage_catalog_client.entity import EntityMeta, common
-
-# TODO: custom serializers: https://docs.pydantic.dev/latest/api/functional_serializers/#pydantic.functional_serializers.model_serializer
+from backstage_catalog_client.entity import common, entity_meta
 
 
 class Entity(BaseModel):
@@ -39,6 +37,6 @@ class Entity(BaseModel):
         ],
         min_length=1,
     )
-    metadata: EntityMeta.Model
+    metadata: entity_meta.Model
     spec: Optional[dict[str, Any]] = Field(None, description="The specification data describing the entity itself.")
     relations: list[common.Relation] = Field([], description="The relations that this entity has with other entities.")
