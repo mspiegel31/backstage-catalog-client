@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field
 
 from backstage_catalog_client.entity.entity import Entity
 
@@ -15,21 +15,6 @@ from backstage_catalog_client.entity.entity import Entity
 class ApiVersion(Enum):
     backstage_io_v1alpha1 = "backstage.io/v1alpha1"
     backstage_io_v1beta1 = "backstage.io/v1beta1"
-
-
-class Kind(Enum):
-    Location = "Location"
-
-
-class Target(RootModel[str]):
-    root: str = Field(
-        ...,
-        examples=[
-            "./details/catalog-info.yaml",
-            "http://github.com/myorg/myproject/org-data-dump/catalog-info-staff.yaml",
-        ],
-        min_length=1,
-    )
 
 
 class Presence(Enum):
@@ -50,9 +35,14 @@ class Spec(BaseModel):
         examples=["./details/catalog-info.yaml"],
         min_length=1,
     )
-    targets: Optional[list[Target]] = Field(
+    targets: Optional[list[str]] = Field(
         None,
         description="A list of targets as strings. They can all be either absolute paths/URLs (depending on the type), or relative paths such as ./details/catalog-info.yaml which are resolved relative to the location of this Location entity itself.",
+        examples=[
+            "./details/catalog-info.yaml",
+            "http://github.com/myorg/myproject/org-data-dump/catalog-info-staff.yaml",
+        ],
+        min_length=1,
     )
     presence: Optional[Presence] = Field(
         "required",
@@ -67,6 +57,6 @@ class Location(Entity):
     spec: Spec
 
     # maybe a bit of hack, but we want some default values to continue to show up when calling model.model_dump()
-    def model_post_init(self):
+    def model_post_init(self, context: Any):
         self.__pydantic_fields_set__.add("kind")
         self.__pydantic_fields_set__.add("apiVersion")
