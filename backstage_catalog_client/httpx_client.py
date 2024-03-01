@@ -35,7 +35,6 @@ class HttpxClient(CatalogApi):
             dict_request["filter"] = get_filter_value(request.filter)
 
         response = await self.client.get(f"{self.catalog_api_path}/entities", params=dict_request)
-        if response.status_code != 200:
-            raise Exception(response.text)
+        response.raise_for_status()
 
         return GetEntitiesResponse(items=response.json())

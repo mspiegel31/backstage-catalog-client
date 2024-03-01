@@ -26,7 +26,7 @@ CATALOG_FILTER_EXISTS = "CATALOG_FILTER_EXISTS_0e15b590c0b343a2bae3e787e84c2111"
 CATALOG_API_BASE_PATH = "/api/catalog"
 
 
-def get_filter_value(entity_filter: EntityFilterQuery = []):
+def get_filter_value(entity_filter: EntityFilterQuery) -> list[str]:
     prepared_filters: list[str] = []
     # filter param can occur multiple times, for example
     # /api/catalog/entities?filter=metadata.name=wayback-search,kind=component&filter=metadata.name=www-artist,kind=component'
@@ -92,7 +92,7 @@ class TODOCatalogApi(Protocol):
         self, request: GetEntityFacetsRequest, options: CatalogRequestOptions | None
     ) -> GetEntityFacetsResponse: ...
 
-    async def getLocationById(self, id: str, options: CatalogRequestOptions | None) -> Location | None: ...
+    async def getLocationById(self, location_id: str, options: CatalogRequestOptions | None) -> Location | None: ...
 
     async def getLocationByRef(self, locationRef: str, options: CatalogRequestOptions | None) -> Location | None: ...
 
@@ -100,7 +100,7 @@ class TODOCatalogApi(Protocol):
         self, location: AddLocationRequest, options: CatalogRequestOptions | None
     ) -> AddLocationResponse: ...
 
-    async def removeLocationById(self, id: str, options: CatalogRequestOptions | None) -> None: ...
+    async def removeLocationById(self, location_id: str, options: CatalogRequestOptions | None) -> None: ...
 
     async def getLocationByEntity(
         self,
