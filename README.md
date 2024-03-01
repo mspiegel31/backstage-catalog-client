@@ -48,3 +48,10 @@ For more details, see [here](https://fpgmaas.github.io/cookiecutter-poetry/featu
 ---
 
 Repository initiated with [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry).
+
+## Generating entities
+
+TODO: script
+
+1. run `scripts/generate-models.py` to fetch jsonschemas in a pydantic-friendly way
+2. run datamodel-codegen: `datamodel-codegen --input schemas/ --input-file-type jsonschema --output backstage_catalog_client/entity  --output-model-type pydantic_v2.BaseModel --use-title-as-name`
