@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import dataclasses
-from typing import Any, ClassVar, Dict, Protocol
+from typing import Any, ClassVar, Protocol
 
 
 # thanks https://stackoverflow.com/questions/54668000/type-hint-for-an-instance-of-a-non-specific-dataclass
 class IsDataclass(Protocol):
-    __dataclass_fields__: ClassVar[Dict[str, Any]]
+    __dataclass_fields__: ClassVar[dict[str, Any]]
 
 
 def to_dict(obj: IsDataclass, exclude_none: bool = True) -> dict[str, Any]:

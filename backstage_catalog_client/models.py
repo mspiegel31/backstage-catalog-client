@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Dict, List, Literal, Mapping, Optional, Sequence, Union
+from typing import Literal, Mapping, Sequence
 
 from backstage_catalog_client.raw_entity import RawEntity
 
@@ -22,17 +24,17 @@ class EntityOrderQuery:
 
 @dataclass
 class GetEntitiesRequest:
-    entity_filter: Optional[EntityFilterQuery] = None
-    fields: Optional[List[str]] = None
-    order: Optional[Union[EntityOrderQuery, Sequence[EntityOrderQuery]]] = None
-    offset: Optional[int] = None
-    limit: Optional[int] = None
-    after: Optional[str] = None
+    entity_filter: EntityFilterQuery | None = None
+    fields: list[str] | None = None
+    order: EntityOrderQuery | Sequence[EntityOrderQuery] | None = None
+    offset: int | None = None
+    limit: int | None = None
+    after: str | None = None
 
 
 @dataclass
 class GetEntitiesResponse:
-    items: List[RawEntity]
+    items: list[RawEntity]
 
 
 @dataclass
@@ -72,7 +74,7 @@ class GetEntityFacetsResponse:
 
 @dataclass
 class CatalogRequestOptions:
-    token: Optional[str] = None
+    token: str | None = None
 
 
 @dataclass
@@ -84,47 +86,47 @@ class Location:
 
 @dataclass
 class AddLocationRequest:
-    location_type: Optional[str]
+    location_type: str | None
     target: str
-    dryRun: Optional[bool]
+    dryRun: bool | None
 
 
 @dataclass
 class AddLocationResponse:
     location: Location
-    entities: List[RawEntity]
-    exists: Optional[bool]
+    entities: list[RawEntity]
+    exists: bool | None
 
 
 @dataclass
 class ValidateEntityResponse:
     valid: bool
-    errors: List[SerializedError]
+    errors: list[SerializedError]
 
 
 @dataclass
 class QueryEntitiesInitialRequest:
-    fields: Optional[List[str]]
-    limit: Optional[int]
-    entity_filter: Optional[EntityFilterQuery]
-    orderFields: Optional[EntityOrderQuery]
-    fullTextFilter: Optional[Dict[str, Union[str, List[str]]]]
+    fields: list[str] | None
+    limit: int | None
+    entity_filter: EntityFilterQuery | None
+    orderFields: EntityOrderQuery | None
+    fullTextFilter: dict[str, str | list[str]] | None
 
 
 @dataclass
 class QueryEntitiesCursorRequest:
-    fields: Optional[List[str]]
-    limit: Optional[int]
+    fields: list[str] | None
+    limit: int | None
     cursor: str
 
 
 @dataclass
 class QueryEntitiesRequest:
-    query_entity: Optional[Union[QueryEntitiesInitialRequest, QueryEntitiesCursorRequest]]
+    query_entity: QueryEntitiesInitialRequest | QueryEntitiesCursorRequest | None
 
 
 @dataclass
 class QueryEntitiesResponse:
-    items: List[RawEntity]
+    items: list[RawEntity]
     totalItems: int
-    pageInfo: Dict[str, Optional[str]]
+    pageInfo: dict[str, str] | None
