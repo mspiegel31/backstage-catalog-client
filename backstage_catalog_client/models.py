@@ -22,7 +22,7 @@ class EntityOrderQuery:
 
 @dataclass
 class GetEntitiesRequest:
-    filter: Optional[EntityFilterQuery] = None
+    entity_filter: Optional[EntityFilterQuery] = None
     fields: Optional[List[str]] = None
     order: Optional[Union[EntityOrderQuery, Sequence[EntityOrderQuery]]] = None
     offset: Optional[int] = None
@@ -77,14 +77,14 @@ class CatalogRequestOptions:
 
 @dataclass
 class Location:
-    id: str
-    type: str
+    location_id: str
+    location_type: str
     target: str
 
 
 @dataclass
 class AddLocationRequest:
-    type: Optional[str]
+    location_type: Optional[str]
     target: str
     dryRun: Optional[bool]
 
@@ -106,7 +106,7 @@ class ValidateEntityResponse:
 class QueryEntitiesInitialRequest:
     fields: Optional[List[str]]
     limit: Optional[int]
-    filter: Optional[EntityFilterQuery]
+    entity_filter: Optional[EntityFilterQuery]
     orderFields: Optional[EntityOrderQuery]
     fullTextFilter: Optional[Dict[str, Union[str, List[str]]]]
 
@@ -120,7 +120,7 @@ class QueryEntitiesCursorRequest:
 
 @dataclass
 class QueryEntitiesRequest:
-    filter: Optional[Union[QueryEntitiesInitialRequest, QueryEntitiesCursorRequest]]
+    query_entity: Optional[Union[QueryEntitiesInitialRequest, QueryEntitiesCursorRequest]]
 
 
 @dataclass

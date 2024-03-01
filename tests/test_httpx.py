@@ -69,7 +69,7 @@ class TestGetEntities:
             {"c": "="},
             {"d": CATALOG_FILTER_EXISTS},
         ]
-        request = GetEntitiesRequest(filter=query_filter)
+        request = GetEntitiesRequest(entity_filter=query_filter)
         await httpx_catalog_client.getEntities(request)
         actual = default_router.calls.last.request.url.params.get_list("filter")
         assert actual == ["a=1", "b=2,b=3", "c==", "d"]
@@ -84,7 +84,7 @@ class TestGetEntities:
                 "^&*(){}[]": ["t%^url*encoded2", "url"],
             }
         ]
-        await httpx_catalog_client.getEntities(GetEntitiesRequest(filter=query_filter))
+        await httpx_catalog_client.getEntities(GetEntitiesRequest(entity_filter=query_filter))
         actual = default_router.calls.last.request.url.params.get_list("filter")
         assert actual == ["!@#$%=t?i=1&a:2,^&*(){}[]=t%^url*encoded2,^&*(){}[]=url"]
 

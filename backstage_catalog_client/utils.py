@@ -24,7 +24,7 @@ class EntityRef:
         return f"{self.kind}:{self.namespace}/{self.name}"
 
 
-def parse_ref_string(ref: str):
+def parse_ref_string(ref: str) -> EntityRef:
     colonI = ref.find(":")
     slashI = ref.find("/")
 
@@ -37,6 +37,6 @@ def parse_ref_string(ref: str):
     name = ref[max(colonI + 1, slashI + 1) :]
 
     if not (kind and namespace and name):
-        raise TypeError(f'Entity reference "{ref}" was not on the form [<kind>:][<namespace>/]<name>')
+        raise TypeError(f'Entity reference "{ref}" was not on the form [<kind>:][<namespace>/]<name>')  # noqa: TRY003
 
     return EntityRef(kind=kind, namespace=namespace, name=name)

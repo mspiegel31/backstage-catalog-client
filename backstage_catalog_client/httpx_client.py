@@ -2,7 +2,11 @@ from urllib.parse import urljoin
 
 from httpx import AsyncClient
 
-from backstage_catalog_client.catalog_api import CATALOG_API_BASE_PATH, CatalogApi, get_filter_value
+from backstage_catalog_client.catalog_api import (
+    CATALOG_API_BASE_PATH,
+    CatalogApi,
+    get_filter_value,
+)
 from backstage_catalog_client.models import (
     CatalogRequestOptions,
     GetEntitiesRequest,
@@ -24,15 +28,15 @@ class HttpxClient(CatalogApi):
         self,
         request: GetEntitiesRequest | None = None,
         options: CatalogRequestOptions | None = None,
-    ):
+    ) -> GetEntitiesResponse:
         if request is None:
             request = GetEntitiesRequest()
         if options is None:
             options = CatalogRequestOptions()
 
         dict_request = to_dict(request)
-        if request.filter:
-            dict_request["filter"] = get_filter_value(request.filter)
+        if request.entity_filter:
+            dict_request["filter"] = get_filter_value(request.entity_filter)
 
         response = await self.client.get(f"{self.catalog_api_path}/entities", params=dict_request)
         response.raise_for_status()
