@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List
 
 import httpx
 import pytest
@@ -21,7 +21,7 @@ def all_entities():
 
 
 @pytest.fixture(scope="session")
-def components(all_entities: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def components(all_entities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [entity for entity in all_entities if entity["kind"].lower() == "component"]
 
 

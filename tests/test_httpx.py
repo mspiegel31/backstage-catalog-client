@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 
 import httpx
 import pytest
@@ -9,7 +9,7 @@ from backstage_catalog_client.catalog_api import CATALOG_FILTER_EXISTS, CatalogA
 from backstage_catalog_client.models import GetEntitiesRequest
 from backstage_catalog_client.raw_entity import RawEntity
 
-entities: list[RawEntity] = [
+entities: List[RawEntity] = [
     {
         "apiVersion": "backstage.io/v1alpha1",
         "kind": "Component",
@@ -24,12 +24,12 @@ entities: list[RawEntity] = [
     },
 ]
 
-ResponseClosure = Callable[[list[RawEntity]], respx.Router]
+ResponseClosure = Callable[[List[RawEntity]], respx.Router]
 
 
 @pytest.fixture()
 def with_reponse_data(respx_mock: respx.Router) -> ResponseClosure:
-    def inner(data: list[RawEntity]):
+    def inner(data: List[RawEntity]):
         response = httpx.Response(200, json=data)
         respx_mock.get(f"{mock_base_url}/entities").mock(return_value=response)
         return respx_mock

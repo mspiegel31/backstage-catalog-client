@@ -40,4 +40,4 @@ class RawEntity(TypedDict):
     kind: str
     metadata: RawEntityMeta
     spec: NotRequired[Dict[str, Any]]
-    relations: NotRequired[list[RawEntityRelation]]
+    relations: NotRequired[List[RawEntityRelation]]
