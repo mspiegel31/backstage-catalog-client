@@ -101,7 +101,7 @@ class TestGetEntities:
     async def test_it_handles_field_filterd_entities(
         httpx_catalog_client: CatalogApi, with_reponse_data: ResponseClosure
     ):
-        with_reponse_data([{"apiVersion": "1"}, {"apiVersion": "2"}])  # type: ignore
+        with_reponse_data([{"apiVersion": "1"}, {"apiVersion": "2"}])
         request = GetEntitiesRequest(fields=["apiVersion"])
         response = await httpx_catalog_client.getEntities(request)
         assert response.items == [{"apiVersion": "1"}, {"apiVersion": "2"}]

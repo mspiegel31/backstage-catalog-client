@@ -20,7 +20,7 @@ class EntityRef:
     name: str
     namespace: str | None = "default"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.kind}:{self.namespace}/{self.name}"
 
 

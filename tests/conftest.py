@@ -6,7 +6,7 @@ import httpx
 import pytest
 import pytest_asyncio
 
-from backstage_catalog_client.httpx import DefaultCatalogApi
+from backstage_catalog_client.httpx_client import HttpxClient
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -33,4 +33,4 @@ async def httpx_client():
 
 @pytest.fixture()
 def httpx_catalog_client():
-    yield DefaultCatalogApi(mock_base_url)
+    yield HttpxClient(mock_base_url)

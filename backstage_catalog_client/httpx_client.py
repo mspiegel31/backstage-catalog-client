@@ -11,7 +11,7 @@ from backstage_catalog_client.models import (
 from backstage_catalog_client.utils import to_dict
 
 
-class DefaultCatalogApi(CatalogApi):
+class HttpxClient(CatalogApi):
     def __init__(self, base_url: str, client: AsyncClient | None = None) -> None:
         self.catalog_api_path = urljoin(base_url, CATALOG_API_BASE_PATH)
         self.base_url = base_url
