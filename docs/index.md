@@ -9,7 +9,7 @@ A python client for the Backstage catalog API. Only uses native python datatypes
 
 # Usage
 
-to use a ready-made client, import it and make requests
+To use a ready-made client, import it and make requests
 
 ```python
 import asyncio
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
 # Building your own client
 
-this package exports both an `AsyncCatalogApi` and a `SyncCatalogApi` as python [protocols](https://typing.readthedocs.io/en/latest/spec/protocol.html#protocols). You can use these to implement your own clients for the Catalog API.
+This package exports both an `AsyncCatalogApi` and a `SyncCatalogApi` as python [protocols](https://typing.readthedocs.io/en/latest/spec/protocol.html#protocols). You can use these to implement your own clients for the Catalog API.
 
 For example, if you'd like to implement your own synchronous Catalog API client:
 
