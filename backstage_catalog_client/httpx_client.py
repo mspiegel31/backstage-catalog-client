@@ -4,11 +4,8 @@ from urllib.parse import urljoin
 
 from httpx import AsyncClient
 
-from backstage_catalog_client.catalog_api import (
-    CATALOG_API_BASE_PATH,
-    CatalogApi,
-    get_filter_value,
-)
+from backstage_catalog_client.catalog_api.async_api import AsyncCatalogApi
+from backstage_catalog_client.catalog_api.util import CATALOG_API_BASE_PATH, get_filter_value
 from backstage_catalog_client.models import (
     CatalogRequestOptions,
     GetEntitiesRequest,
@@ -17,7 +14,7 @@ from backstage_catalog_client.models import (
 from backstage_catalog_client.utils import to_dict
 
 
-class HttpxClient(CatalogApi):
+class HttpxClient(AsyncCatalogApi):
     def __init__(self, base_url: str, client: AsyncClient | None = None) -> None:
         self.catalog_api_path = urljoin(base_url, CATALOG_API_BASE_PATH)
         self.base_url = base_url
@@ -26,7 +23,7 @@ class HttpxClient(CatalogApi):
         else:
             self.client = client
 
-    async def getEntities(
+    async def get_entities(
         self,
         request: GetEntitiesRequest | None = None,
         options: CatalogRequestOptions | None = None,
