@@ -5,7 +5,8 @@ import pytest
 import respx
 from conftest import mock_base_url
 
-from backstage_catalog_client.catalog_api import CATALOG_FILTER_EXISTS, CatalogApi
+from backstage_catalog_client.catalog_api.async_api import AsyncCatalogApi
+from backstage_catalog_client.catalog_api.util import CATALOG_FILTER_EXISTS
 from backstage_catalog_client.models import GetEntitiesRequest
 from backstage_catalog_client.raw_entity import RawEntity
 
@@ -52,14 +53,14 @@ class TestGetEntities:
 
     @staticmethod
     async def test_it_should_fetch_from_the_correct_endpoint(
-        httpx_catalog_client: CatalogApi,
+        httpx_catalog_client: AsyncCatalogApi,
     ):
-        response = await httpx_catalog_client.getEntities()
+        response = await httpx_catalog_client.get_entities()
         assert response.items == entities
 
     @staticmethod
     async def test_it_should_build_multiple_entity_search_params_properly(
-        httpx_catalog_client: CatalogApi,
+        httpx_catalog_client: AsyncCatalogApi,
         default_router: respx.Router,
     ):
         query_filter = [
@@ -69,13 +70,13 @@ class TestGetEntities:
             {"d": CATALOG_FILTER_EXISTS},
         ]
         request = GetEntitiesRequest(entity_filter=query_filter)
-        await httpx_catalog_client.getEntities(request)
+        await httpx_catalog_client.get_entities(request)
         actual = default_router.calls.last.request.url.params.get_list("filter")
         assert actual == ["a=1", "b=2,b=3", "c==", "d"]
 
     @staticmethod
     async def test_it_builds_search_filters_properly_even_with_URL_unsafe_values(
-        httpx_catalog_client: CatalogApi, default_router: respx.Router
+        httpx_catalog_client: AsyncCatalogApi, default_router: respx.Router
     ):
         query_filter = [
             {
@@ -83,24 +84,24 @@ class TestGetEntities:
                 "^&*(){}[]": ["t%^url*encoded2", "url"],
             }
         ]
-        await httpx_catalog_client.getEntities(GetEntitiesRequest(entity_filter=query_filter))
+        await httpx_catalog_client.get_entities(GetEntitiesRequest(entity_filter=query_filter))
         actual = default_router.calls.last.request.url.params.get_list("filter")
         assert actual == ["!@#$%=t?i=1&a:2,^&*(){}[]=t%^url*encoded2,^&*(){}[]=url"]
 
     @staticmethod
     async def test_it_builds_entity_field_selector_properly(
-        httpx_catalog_client: CatalogApi, default_router: respx.Router
+        httpx_catalog_client: AsyncCatalogApi, default_router: respx.Router
     ):
         request = GetEntitiesRequest(fields=["metadata.name", "spec.type"])
-        await httpx_catalog_client.getEntities(request)
+        await httpx_catalog_client.get_entities(request)
         actual = default_router.calls.last.request.url.params.get_list("fields")
         assert actual == request.fields
 
     @staticmethod
     async def test_it_handles_field_filterd_entities(
-        httpx_catalog_client: CatalogApi, with_reponse_data: ResponseClosure
+        httpx_catalog_client: AsyncCatalogApi, with_reponse_data: ResponseClosure
     ):
         with_reponse_data([{"apiVersion": "1"}, {"apiVersion": "2"}])
         request = GetEntitiesRequest(fields=["apiVersion"])
-        response = await httpx_catalog_client.getEntities(request)
+        response = await httpx_catalog_client.get_entities(request)
         assert response.items == [{"apiVersion": "1"}, {"apiVersion": "2"}]

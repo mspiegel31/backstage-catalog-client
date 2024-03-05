@@ -5,11 +5,13 @@ site_description: a python client for the Backstage catalog API
 site_author: Mike Spiegel
 edit_uri: edit/main/docs/
 repo_name: mspiegel31/backstage-catalog-client
-copyright: Maintained by <a href="https://mspiegel31.com">Florian</a>.
+copyright: Maintained by <a href="https://github.com/mspiegel31">Mike Spiegel</a>.
 
 nav:
   - Home: index.md
-  - Modules: modules.md
+  - Models: models.md
+  - Async API: async-api.md
+  - Sync API: sync-api.md
 plugins:
   - search
   - mkdocstrings:
@@ -22,6 +24,11 @@ theme:
   name: material
   feature:
     tabs: true
+  features:
+    # https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#code-annotations
+    - content.code.annotate
+    - content.code.copy
+
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -52,3 +59,10 @@ markdown_extensions:
       permalink: true
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
