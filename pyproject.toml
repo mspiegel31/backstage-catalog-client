@@ -92,6 +92,9 @@ ignore = [
     # Avoid specifying long messages outside the exception class
     "TRY003"
 ]
+[tool.ruff.lint]
+ignore-init-module-imports = true
+
 
 [tool.ruff.format]
 preview = true
