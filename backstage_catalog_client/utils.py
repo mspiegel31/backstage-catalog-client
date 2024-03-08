@@ -3,6 +3,8 @@ from __future__ import annotations
 import dataclasses
 from typing import Any, ClassVar, Protocol
 
+from backstage_catalog_client.models import CompoundEntityRef
+
 
 # thanks https://stackoverflow.com/questions/54668000/type-hint-for-an-instance-of-a-non-specific-dataclass
 class IsDataclass(Protocol):
@@ -16,17 +18,9 @@ def to_dict(obj: IsDataclass, exclude_none: bool = True) -> dict[str, Any]:
     return d
 
 
-@dataclasses.dataclass
-class EntityRef:
-    kind: str
-    name: str
-    namespace: str | None = "default"
-
-    def __str__(self) -> str:
-        return f"{self.kind}:{self.namespace}/{self.name}"
-
-
-def parse_ref_string(ref: str) -> EntityRef:
+def parse_ref_string(
+    ref: str, default_kind: str | None = None, default_namespace: str | None = None
+) -> CompoundEntityRef:
     colonI = ref.find(":")
     slashI = ref.find("/")
 
@@ -38,7 +32,18 @@ def parse_ref_string(ref: str) -> EntityRef:
     namespace = None if slashI == -1 else ref[colonI + 1 : slashI]
     name = ref[max(colonI + 1, slashI + 1) :]
 
-    if not (kind and namespace and name):
-        raise TypeError(f'Entity reference "{ref}" was not on the form [<kind>:][<namespace>/]<name>')  # noqa: TRY003
+    final_kind = kind or default_kind
+    final_namespace = namespace or default_namespace or "default"
 
-    return EntityRef(kind=kind, namespace=namespace, name=name)
+    if final_kind is None:
+        raise ValueError(
+            f'Entity reference {ref} had missing or empty kind (e.g. did not start with "component:" or similar)'
+        )
+
+    if final_namespace is None:
+        raise ValueError(f"Entity reference {ref} had missing or empty namespace")
+
+    if not name:
+        raise ValueError(f"Entity reference {ref} had missing or empty name")
+
+    return CompoundEntityRef(kind=final_kind, namespace=final_namespace, name=name)

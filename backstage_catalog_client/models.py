@@ -78,7 +78,8 @@ class GetEntitiesResponse:
 
 @dataclass
 class GetEntitiesByRefsRequest:
-    pass
+    entity_refs: list[str]
+    fields: list[str] | None = None
 
 
 @dataclass
@@ -98,7 +99,14 @@ class GetEntityAncestorsResponse:
 
 @dataclass
 class CompoundEntityRef:
-    pass
+    """all parts of a compound entity reference."""
+
+    kind: str
+    name: str
+    namespace: str = "default"
+
+    def __str__(self) -> str:
+        return f"{self.kind}:{self.namespace}/{self.name}"
 
 
 @dataclass

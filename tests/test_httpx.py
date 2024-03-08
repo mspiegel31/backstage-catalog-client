@@ -7,7 +7,7 @@ from conftest import mock_base_url
 
 from backstage_catalog_client.catalog_api.async_api import AsyncCatalogApi
 from backstage_catalog_client.catalog_api.util import CATALOG_FILTER_EXISTS
-from backstage_catalog_client.models import GetEntitiesRequest
+from backstage_catalog_client.models import CompoundEntityRef, GetEntitiesRequest
 from backstage_catalog_client.raw_entity import RawEntity
 
 entities: List[RawEntity] = [
@@ -105,3 +105,48 @@ class TestGetEntities:
         request = GetEntitiesRequest(fields=["apiVersion"])
         response = await httpx_catalog_client.get_entities(request)
         assert response.items == [{"apiVersion": "1"}, {"apiVersion": "2"}]
+
+
+@pytest.mark.asyncio(scope="class")
+class TestGetEntityByRef:
+    @staticmethod
+    @pytest.fixture(autouse=True)
+    def _setup(respx_mock: respx.Router):
+        respx_mock.get(f"{mock_base_url}/entities/by-name/component/default/www-artist").mock(
+            return_value=httpx.Response(200, json=entities[1])
+        )
+        respx_mock.get(f"{mock_base_url}/entities/by-name/component/default/non-existent").mock(
+            return_value=httpx.Response(404)
+        )
+
+    @staticmethod
+    async def test_it_should_fetch_from_the_correct_endpoint(
+        httpx_catalog_client: AsyncCatalogApi,
+    ):
+        response = await httpx_catalog_client.get_entity_by_ref("component:www-artist")
+        assert response == entities[1]
+
+    @staticmethod
+    async def test_it_should_fetch_from_the_correct_endpoint_with_compound_entity_ref(
+        httpx_catalog_client: AsyncCatalogApi,
+    ):
+        response = await httpx_catalog_client.get_entity_by_ref(
+            CompoundEntityRef(kind="component", namespace="default", name="www-artist")
+        )
+        assert response == entities[1]
+
+    @staticmethod
+    async def test_it_should_return_none_if_entity_not_found(
+        httpx_catalog_client: AsyncCatalogApi,
+    ):
+        response = await httpx_catalog_client.get_entity_by_ref("component:default/non-existent")
+        assert response is None
+
+    @staticmethod
+    async def test_it_should_return_none_if_entity_not_found_with_compound_entity_ref(
+        httpx_catalog_client: AsyncCatalogApi,
+    ):
+        response = await httpx_catalog_client.get_entity_by_ref(
+            CompoundEntityRef(kind="component", name="non-existent")
+        )
+        assert response is None
