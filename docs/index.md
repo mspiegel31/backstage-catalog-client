@@ -14,7 +14,7 @@ To use a ready-made client, import it and make requests
 ```python
 import asyncio
 import json
-from backstage_catalog_client.httpx_client import HttpxClient
+from backstage_catalog_client import HttpxClient
 
 
 async def main():
@@ -37,7 +37,7 @@ For example, if you'd like to implement your own synchronous Catalog API client:
 ```python
 from typing import List
 from backstage_catalog_client.raw_entity import RawEntity
-from backstage_catalog_client.catalog_api.sync_api import SyncCatalogApi
+from backstage_catalog_client import SyncCatalogApi
 from backstage_catalog_client.models import GetEntitiesResponse
 
 class HighPerformanceCatalogApi(SyncCatalogApi):

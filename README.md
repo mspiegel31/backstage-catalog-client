@@ -26,7 +26,7 @@ to use a ready-made client, import it and make requests
 ```python
 import asyncio
 import json
-from backstage_catalog_client.httpx_client import HttpxClient
+from backstage_catalog_client import HttpxClient
 
 
 async def main():
