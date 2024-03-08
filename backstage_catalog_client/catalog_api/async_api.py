@@ -41,19 +41,37 @@ class AsyncCatalogApi(Protocol):
         """
         ...
 
+    async def get_entity_by_ref(
+        self,
+        request: str | CompoundEntityRef,
+        options: CatalogRequestOptions | None = None,
+    ) -> RawEntity | None:
+        """
+        Gets a single entity from your backstage instance by reference (kind, namespace, name).
+
+        Args:
+            request: The reference to the entity to fetch.
+            options: The options for the catalog request. Defaults to None.
+
+        Returns:
+            The entity if found, otherwise None.
+        """
+
+        ...
+
 
 class todo_catalog_api(Protocol):
-    async def get_entities_by_refs(
-        self,
-        request: GetEntitiesByRefsRequest,
-        options: CatalogRequestOptions | None,
-    ) -> GetEntitiesByRefsResponse: ...
-
     async def query_entities(
         self,
         request: QueryEntitiesRequest | None,
         options: CatalogRequestOptions | None,
     ) -> QueryEntitiesResponse: ...
+
+    async def get_entities_by_refs(
+        self,
+        request: GetEntitiesByRefsRequest,
+        options: CatalogRequestOptions | None,
+    ) -> GetEntitiesByRefsResponse: ...
 
     async def get_entity_ancestors(
         self,
