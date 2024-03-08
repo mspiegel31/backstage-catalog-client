@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, Mapping, Sequence, Union
 
-from backstage_catalog_client.raw_entity import RawEntity
+from backstage_catalog_client.entity import Entity
 
 EntityFilterItem = Mapping[str, Union[str, Sequence[str]]]
 
@@ -73,7 +73,7 @@ class GetEntitiesRequest:
 class GetEntitiesResponse:
     """the repsonse type for getEntities"""
 
-    items: list[RawEntity]
+    items: list[Entity]
 
 
 @dataclass
@@ -144,7 +144,7 @@ class AddLocationRequest:
 @dataclass
 class AddLocationResponse:
     location: Location
-    entities: list[RawEntity]
+    entities: list[Entity]
     exists: bool | None
 
 
@@ -177,6 +177,6 @@ class QueryEntitiesRequest:
 
 @dataclass
 class QueryEntitiesResponse:
-    items: list[RawEntity]
+    items: list[Entity]
     totalItems: int
     pageInfo: dict[str, str] | None

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
+from backstage_catalog_client.entity import Entity
 from backstage_catalog_client.models import (
     AddLocationRequest,
     AddLocationResponse,
@@ -20,7 +21,6 @@ from backstage_catalog_client.models import (
     QueryEntitiesResponse,
     ValidateEntityResponse,
 )
-from backstage_catalog_client.raw_entity import RawEntity
 
 
 class AsyncCatalogApi(Protocol):
@@ -45,7 +45,7 @@ class AsyncCatalogApi(Protocol):
         self,
         request: str | CompoundEntityRef,
         options: CatalogRequestOptions | None = None,
-    ) -> RawEntity | None:
+    ) -> Entity | None:
         """
         Gets a single entity from your backstage instance by reference (kind, namespace, name).
 
@@ -83,7 +83,7 @@ class todo_catalog_api(Protocol):
         self,
         entityRef: str | CompoundEntityRef,
         options: CatalogRequestOptions | None,
-    ) -> RawEntity | None: ...
+    ) -> Entity | None: ...
 
     async def remove_entity_by_uid(self, uid: str, options: CatalogRequestOptions | None) -> None: ...
 
@@ -110,5 +110,5 @@ class todo_catalog_api(Protocol):
     ) -> Location | None: ...
 
     async def validate_entity(
-        self, entity: RawEntity, locationRef: str, options: CatalogRequestOptions | None
+        self, entity: Entity, locationRef: str, options: CatalogRequestOptions | None
     ) -> ValidateEntityResponse: ...

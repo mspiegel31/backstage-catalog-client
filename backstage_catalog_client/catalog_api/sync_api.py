@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import Protocol
 
+from backstage_catalog_client.entity import Entity
 from backstage_catalog_client.models import (
     CatalogRequestOptions,
     CompoundEntityRef,
     GetEntitiesRequest,
     GetEntitiesResponse,
 )
-from backstage_catalog_client.raw_entity import RawEntity
 
 
 class SyncCatalogApi(Protocol):
@@ -33,7 +33,7 @@ class SyncCatalogApi(Protocol):
         self,
         request: str | CompoundEntityRef,
         options: CatalogRequestOptions | None = None,
-    ) -> RawEntity | None:
+    ) -> Entity | None:
         """
         Gets a single entity from your backstage instance by reference (kind, namespace, name).
 
