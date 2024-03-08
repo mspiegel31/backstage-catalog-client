@@ -7,10 +7,10 @@ from conftest import mock_base_url
 
 from backstage_catalog_client.catalog_api.async_api import AsyncCatalogApi
 from backstage_catalog_client.catalog_api.util import CATALOG_FILTER_EXISTS
+from backstage_catalog_client.entity import Entity
 from backstage_catalog_client.models import CompoundEntityRef, GetEntitiesRequest
-from backstage_catalog_client.raw_entity import RawEntity
 
-entities: List[RawEntity] = [
+entities: List[Entity] = [
     {
         "apiVersion": "backstage.io/v1alpha1",
         "kind": "Component",
@@ -25,12 +25,12 @@ entities: List[RawEntity] = [
     },
 ]
 
-ResponseClosure = Callable[[List[RawEntity]], respx.Router]
+ResponseClosure = Callable[[List[Entity]], respx.Router]
 
 
 @pytest.fixture()
 def with_reponse_data(respx_mock: respx.Router) -> ResponseClosure:
-    def inner(data: List[RawEntity]):
+    def inner(data: List[Entity]):
         response = httpx.Response(200, json=data)
         respx_mock.get(f"{mock_base_url}/entities").mock(return_value=response)
         return respx_mock
