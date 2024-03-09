@@ -18,10 +18,34 @@ from backstage_catalog_client import HttpxClient
 
 
 async def main():
-    catalog = HttpxClient("https://demo.backstage.io/")
-    data = await catalog.get_entities()
+    with HttpxClient("https://demo.backstage.io/") as backstage:
+        data = await backstage.get_entities()
+        for entity in data.items[:1]:
+            print(json.dumps(entity, indent=2))
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+if you're using the `HttpxClient`, you can also optionally pass your own fully-configured `httpx.AsyncClient` and make requests that way
+
+```python
+import asyncio
+import httpx
+import json
+from backstage_catalog_client import HttpxClient
+
+
+async def main():
+    client = httpx.AsyncClient(base_url="https://demo.backstage.io", timeout=.5)
+    backstage = HttpxClient(client=client)
+    data = await backstage.get_entities()
     for entity in data.items[:1]:
         print(json.dumps(entity, indent=2))
+
+    # important!  don't forget to clean up your client
+    await client.aclose()
 
 
 if __name__ == "__main__":
