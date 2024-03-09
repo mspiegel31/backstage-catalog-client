@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 from typing import Any, ClassVar, Protocol
 
-from backstage_catalog_client.models import CompoundEntityRef
+from backstage_catalog_client.models import EntityRef
 
 
 # thanks https://stackoverflow.com/questions/54668000/type-hint-for-an-instance-of-a-non-specific-dataclass
@@ -18,9 +18,7 @@ def to_dict(obj: IsDataclass, exclude_none: bool = True) -> dict[str, Any]:
     return d
 
 
-def parse_ref_string(
-    ref: str, default_kind: str | None = None, default_namespace: str | None = None
-) -> CompoundEntityRef:
+def parse_ref_string(ref: str, default_kind: str | None = None, default_namespace: str | None = None) -> EntityRef:
     colonI = ref.find(":")
     slashI = ref.find("/")
 
@@ -46,4 +44,4 @@ def parse_ref_string(
     if not name:
         raise ValueError(f"Entity reference {ref} had missing or empty name")
 
-    return CompoundEntityRef(kind=final_kind, namespace=final_namespace, name=name)
+    return EntityRef(kind=final_kind, namespace=final_namespace, name=name)

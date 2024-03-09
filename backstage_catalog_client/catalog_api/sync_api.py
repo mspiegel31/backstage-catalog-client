@@ -5,7 +5,7 @@ from typing import Protocol
 from backstage_catalog_client.entity import Entity
 from backstage_catalog_client.models import (
     CatalogRequestOptions,
-    CompoundEntityRef,
+    EntityRef,
     GetEntitiesRequest,
     GetEntitiesResponse,
 )
@@ -31,7 +31,7 @@ class SyncCatalogApi(Protocol):
 
     def get_entity_by_ref(
         self,
-        request: str | CompoundEntityRef,
+        request: str | EntityRef,
         options: CatalogRequestOptions | None = None,
     ) -> Entity | None:
         """

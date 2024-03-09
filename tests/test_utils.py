@@ -2,7 +2,7 @@ from typing import Dict
 
 import pytest
 
-from backstage_catalog_client.models import CompoundEntityRef
+from backstage_catalog_client.models import EntityRef
 from backstage_catalog_client.utils import parse_ref_string
 
 
@@ -19,7 +19,7 @@ class TestParseEntityRef:
         ],
     )
     def test_it_handles_some_omissions(ref: str, expected: Dict[str, str]):
-        assert parse_ref_string(ref) == CompoundEntityRef(**expected)
+        assert parse_ref_string(ref) == EntityRef(**expected)
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -31,7 +31,7 @@ class TestParseEntityRef:
         ],
     )
     def test_it_allows_names(ref: str, expected: Dict[str, str]):
-        assert parse_ref_string(ref, default_kind="k", default_namespace="ns") == CompoundEntityRef(**expected)
+        assert parse_ref_string(ref, default_kind="k", default_namespace="ns") == EntityRef(**expected)
 
     @staticmethod
     @pytest.mark.parametrize("ref", ["", ":", "a:", ":b", "a/b:", "a/:b", "a/b:c:", "a/b:c:d", "a/b:c:d:e"])
