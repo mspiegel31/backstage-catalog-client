@@ -35,7 +35,6 @@ class AsyncCatalogApi(Protocol):
 
         Args:
             kwargs: The request object for getting entities. Defaults to None.
-            options: The options for the catalog request. Defaults to None.
 
         Returns:
             The response object containing the entities.
@@ -64,7 +63,7 @@ class AsyncCatalogApi(Protocol):
         Gets a single entity from your backstage instance by reference (kind, namespace, name).
 
         Args:
-            request: The reference to the entity to fetch.
+            ref: The reference to the entity to fetch.
             options: The options for the catalog request. Defaults to None.
 
         Returns:
