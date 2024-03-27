@@ -3,7 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, Mapping, Sequence, Union
 
-from backstage_catalog_client.raw_entity import RawEntity
+from typing_extensions import TypedDict
+
+from backstage_catalog_client.entity import Entity
 
 EntityFilterItem = Mapping[str, Union[str, Sequence[str]]]
 
@@ -40,32 +42,34 @@ OR
 """
 
 
-@dataclass
-class SerializedError:
+class CatalogRequestOptions(TypedDict, total=False):
+    """Options you can pass into a catalog request for additional information."""
+
+    token: str
+    """an Authentication token for authenticated requests"""
+
+
+class SerializedError(TypedDict):
     pass
 
 
-@dataclass
-class EntityOrderQuery:
+class EntityOrderQuery(TypedDict):
     field: str
     order: Literal["asc", "desc"]
 
 
-@dataclass
-class GetEntitiesRequest:
-    """A request items for fetching backstage entities"""
-
-    entity_filter: EntityFilterQuery | None = None
+class GetEntitiesRequest(CatalogRequestOptions, TypedDict, total=False):
+    entity_filter: EntityFilterQuery
     """If given, only entities matching this filter will be returned."""
-    fields: list[str] | None = None
+    fields: Sequence[str]
     """If given, return only the parts of each entity that match the field declarations."""
-    order: EntityOrderQuery | Sequence[EntityOrderQuery] | None = None
+    order: EntityOrderQuery | Sequence[EntityOrderQuery]
     """If given, order the result set by those directives."""
-    offset: int | None = None
+    offset: int
     """If given, skips over the first N items in the result set."""
-    limit: int | None = None
+    limit: int
     """If given, returns at most N items from the result set."""
-    after: str | None = None
+    after: str
     """If given, skips over all items before that cursor as returned by a previous request."""
 
 
@@ -73,18 +77,17 @@ class GetEntitiesRequest:
 class GetEntitiesResponse:
     """the repsonse type for getEntities"""
 
-    items: list[RawEntity]
+    items: list[Entity]
 
 
-@dataclass
-class GetEntitiesByRefsRequest:
-    entity_refs: list[str]
-    fields: list[str] | None = None
+class GetEntitiesByRefsOptions(CatalogRequestOptions, TypedDict, total=False):
+    fields: list[str]
+    entity_filter: EntityFilterQuery
 
 
 @dataclass
 class GetEntitiesByRefsResponse:
-    pass
+    items: list[Entity | None]
 
 
 @dataclass
@@ -98,7 +101,7 @@ class GetEntityAncestorsResponse:
 
 
 @dataclass
-class CompoundEntityRef:
+class EntityRef:
     """all parts of a compound entity reference."""
 
     kind: str
@@ -120,14 +123,6 @@ class GetEntityFacetsResponse:
 
 
 @dataclass
-class CatalogRequestOptions:
-    """Options you can pass into a catalog request for additional information."""
-
-    token: str | None = None
-    """an Authentication token for authenticated requests"""
-
-
-@dataclass
 class Location:
     location_id: str
     location_type: str
@@ -144,7 +139,7 @@ class AddLocationRequest:
 @dataclass
 class AddLocationResponse:
     location: Location
-    entities: list[RawEntity]
+    entities: list[Entity]
     exists: bool | None
 
 
@@ -154,29 +149,37 @@ class ValidateEntityResponse:
     errors: list[SerializedError]
 
 
-@dataclass
-class QueryEntitiesInitialRequest:
-    fields: list[str] | None
-    limit: int | None
-    entity_filter: EntityFilterQuery | None
-    orderFields: EntityOrderQuery | None
-    fullTextFilter: dict[str, str | list[str]] | None
+class FullTextFilter(TypedDict, total=False):
+    search_term: str
+    """search term"""
+    search_fields: list[str]
 
 
-@dataclass
-class QueryEntitiesCursorRequest:
-    fields: list[str] | None
-    limit: int | None
+class QueryEntitiesKwargs(FullTextFilter, CatalogRequestOptions, TypedDict, total=False):
     cursor: str
+    """cursor for the next batch of entities"""
+    entity_filter: EntityFilterQuery
+    """If given, only entities matching this filter will be returned."""
+    fields: list[str]
+    """If given, return only the parts of each entity that match the field declarations."""
+    limit: int
+    """controls the number of items per page;  default is 20"""
+    order_fields: list[EntityOrderQuery] | EntityOrderQuery
+    """If given, order the result set by those directives."""
 
 
 @dataclass
-class QueryEntitiesRequest:
-    query_entity: QueryEntitiesInitialRequest | QueryEntitiesCursorRequest | None
+class PageInfo:
+    nextCursor: str | None = None
+    """The cursor for the next batch of entities"""
+    prevCursor: str | None = None
+    """The cursor for the previous batch of entities"""
 
 
 @dataclass
 class QueryEntitiesResponse:
-    items: list[RawEntity]
-    totalItems: int
-    pageInfo: dict[str, str] | None
+    items: list[Entity]
+    """The list of entities for the current request"""
+    total_items: int
+    """"The number of entities among all the requests"""
+    page_info: PageInfo
